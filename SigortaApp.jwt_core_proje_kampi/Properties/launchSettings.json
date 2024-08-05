@@ -20,7 +20,7 @@
     "SigortaApp.jwt_core_proje_kampi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:39685",
+      "applicationUrl": "http://localhost:43547",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

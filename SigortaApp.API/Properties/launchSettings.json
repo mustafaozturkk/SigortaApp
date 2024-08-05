@@ -20,7 +20,7 @@
     "SigortaApp.API": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:46321",
+      "applicationUrl": "http://localhost:5304",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
