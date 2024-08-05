@@ -1,0 +1,247 @@
+﻿@using SigortaApp.Web.Models
+@model UserSignUpViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Takım Yıldızı | Kayıt Ol</title>
+
+    <!-- Global stylesheets -->
+    <link href="~/LimitlessTheme/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/assets/css/ltr/all.min.css" id="stylesheet" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    <script src="~/LimitlessTheme/demo/demo_configurator.js"></script>
+    <script src="~/LimitlessTheme/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="~/LimitlessTheme/js/jquery/jquery.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    <script src="~/LimitlessTheme/assets/js/app.js"></script>
+    <!-- /theme JS files -->
+
+    <script src="~/LimitlessTheme/js/vendor/forms/selects/select2.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Main navbar -->
+    <div class="navbar navbar-dark navbar-static py-2">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <a href="index.html" class="d-inline-flex align-items-center">
+                    <img src="~/LimitlessTheme/images/Logo/TakimYildizi2.jpg" alt="">&nbsp;&nbsp;
+                    <h3 style="color: white;margin-bottom:0px;">TAKIM YILDIZI</h3>
+                </a>
+            </div>
+
+            <div class="d-flex justify-content-end align-items-center ms-auto">
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item">
+                        <a href="/RegisterUser/Index/" class="navbar-nav-link navbar-nav-link-icon rounded ms-1">
+                            <div class="d-flex align-items-center mx-md-1">
+                                <i class="ph-user-circle-plus"></i>
+                                <span class="d-none d-md-inline-block ms-2">Kayıt Ol</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Login/Index2/" class="navbar-nav-link navbar-nav-link-icon rounded ms-1">
+                            <div class="d-flex align-items-center mx-md-1">
+                                <i class="ph-user-circle"></i>
+                                <span class="d-none d-md-inline-block ms-2">Giriş</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /main navbar -->
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Inner content -->
+            <div class="content-inner">
+
+                <!-- Content area -->
+                <div class="content d-flex justify-content-center align-items-center">
+
+                    <!-- Registration form -->
+                    <form role="form" asp-action="Index" class="flex-fill">
+                        <div class="row">
+                            <div class="col-lg-6 offset-lg-3">
+                                <div class="card mb-0">
+                                    <div class="card-body">
+                                        <div class="text-center mb-3">
+                                            <div class="d-inline-flex align-items-center justify-content-center mb-4 mt-2">
+                                                <img src="~/LimitlessTheme/images/Logo/takimYildizi.jpg" class="" style="width:250px;" alt="">
+                                            </div>
+                                            <h5 class="mb-0">Hesap Oluştur</h5>
+                                            <span class="d-block text-muted">Tüm Alanlar Zorunludur</span>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Kullanıcı Adı</label>
+                                            <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+                                            <div class="form-control-feedback form-control-feedback-start">
+                                                <input type="text" class="form-control" placeholder="Kullanıcı Adınız" asp-for="@Model.UserName">
+                                                <div class="form-control-feedback-icon">
+                                                    <i class="ph-user-circle text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Adınız Soyadınız</label>
+                                            <span asp-validation-for="@Model.NameSurname" class="text-danger"></span>
+                                            <div class="form-control-feedback form-control-feedback-start">
+                                                <input type="text" class="form-control" asp-for="@Model.NameSurname" placeholder="Adınız Soyadınız">
+                                                <div class="form-control-feedback-icon">
+                                                    <i class="ph-user-circle-plus text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Cep Telefon Numarası</label>
+                                            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                                            <div class="form-control-feedback form-control-feedback-start">
+                                                <input type="text" class="form-control" asp-for="@Model.PhoneNumber" placeholder="Cep Telefonu">
+                                                <div class="form-control-feedback-icon">
+                                                    <i class="ph-phone text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Şifre Oluşturun</label>
+                                                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                                                    <div class="form-control-feedback form-control-feedback-start">
+                                                        <input type="password" class="form-control" placeholder="•••••••••••" asp-for="@Model.Password" required="">
+                                                        <div class="form-control-feedback-icon">
+                                                            <i class="ph-lock text-muted"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Şifrenizi Tekrarlayın</label>
+                                                    <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                                                    <div class="form-control-feedback form-control-feedback-start">
+                                                        <input type="password" class="form-control" placeholder="•••••••••••" asp-for="@Model.ConfirmPassword" required="">
+                                                        <div class="form-control-feedback-icon">
+                                                            <i class="ph-lock text-muted"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mailiniz</label>
+                                                    <span asp-validation-for="@Model.Mail" class="text-danger"></span>
+                                                    <div class="form-control-feedback form-control-feedback-start">
+                                                        <input type="email" class="form-control" asp-for="@Model.Mail" placeholder="john@doe.com">
+                                                        <div class="form-control-feedback-icon">
+                                                            <i class="ph-at text-muted"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mailinizi Tekrarlayın</label>
+                                                    <div class="form-control-feedback form-control-feedback-start">
+                                                        <input type="email" class="form-control" placeholder="john@doe.com">
+                                                        <div class="form-control-feedback-icon">
+                                                            <i class="ph-at text-muted"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="form-label">Kayıt Türü</label>
+                                                <select class="form-control select" id="isPerson" asp-for="@Model.IsPersonType">
+                                                    <option value="11">Personel</option>
+                                                    <option value="10">Şirket</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            @*<label class="form-check mb-2">
+                                                <input type="checkbox" name="remember" class="form-check-input" checked>
+                                                <span class="form-check-label">Send me <a href="#">&nbsp;test account settings</a></span>
+                                            </label>
+
+                                            <label class="form-check mb-2">
+                                                <input type="checkbox" name="remember" class="form-check-input" checked>
+                                                <span class="form-check-label">Subscribe to monthly newsletter</span>
+                                            </label>*@
+
+                                            <label class="form-check">
+                                                <input type="checkbox" name="remember" class="form-check-input">
+                                                <span class="form-check-label"><a href="#">&nbsp;Kullanım şartlarını</a> Kabul Edin</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body text-end border-top">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="ph-plus me-2"></i>
+                                            Hesap Oluştur
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- /registration form -->
+
+                </div>
+                <!-- /content area -->
+                <!-- Footer -->
+                <div class="navbar navbar-sm navbar-footer border-top">
+                    <div class="container-fluid">
+                        <span style="margin:auto;"><b>Copyright &copy; 2023 Takım Yıldızı. Tüm hakları saklıdır.</b></span>
+                    </div>
+                </div>
+                <!-- /footer -->
+
+            </div>
+            <!-- /inner content -->
+
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+
+</body>
+</html>
+
+<script>
+    $("#isPerson").select2({
+        placeholder: "Kayıt Tipi Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+    });
+</script>

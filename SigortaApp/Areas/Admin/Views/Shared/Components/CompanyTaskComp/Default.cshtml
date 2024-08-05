@@ -1,0 +1,71 @@
+﻿@model List<SigortaApp.Entity.Dto.TaskDto>
+
+<div class="card" id="cardCss">
+    <div class="table-responsive">
+        <table class="table table-bordered datatable-excel-filter" id="ttTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Sıra</th>
+                    <th>İş No</th>
+                    <th>Alınacak Şirket</th>
+                    <th>Gönderilecek Şirket</th>
+                    <th>Gönderilecek İl</th>
+                    <th>Durum</th>
+                    <th>Otobüs Saati</th>
+                    <th>Alan Kurye</th>
+                    <th>Ödeme Yapacak</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var count = 0;
+                }
+                @foreach (var item in Model)
+                {
+                    count++;
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.Id</td>
+                        <td><a href="#">@item.OrderCompany.Name</a></td>
+                        <td><a href="#">@item.SendCompany.Name</a></td>
+                        <td>@item.City.Name</td>
+                        <td><span class="badge bg-success bg-opacity-10 text-success">@item.Status.Name</span></td>
+                        <td>@item.BusDate</td>
+                        <td>@item.CarrierName</td>
+                        <td>@item.AliciMi</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex">
+                                <a href="#" onclick="funcGetTaskHitoryDetails(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function funcGetTaskHitoryDetails(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TaskHistoryDetails","Task")",
+            data: { taskId: id },
+            success: function (response) {
+                $("#taskHistoryModal").find(".modal-body").html(response);
+                $("#taskHistoryModal").modal('show');
+                funcCardCssSet();
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCloseModal() {
+        $("#taskHistoryModal").modal('hide');
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+</script>

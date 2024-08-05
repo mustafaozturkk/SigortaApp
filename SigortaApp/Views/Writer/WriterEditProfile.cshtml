@@ -1,0 +1,81 @@
+﻿@using SigortaApp.Web.Models
+@model UserUpdateViewModel
+@{
+    ViewData["Title"] = "WriterEditProfile";
+    Layout = "~/Views/Shared/WriterLayout.cshtml";
+}
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Yazar Profil Bilgileri Düzenleme</h4>
+            <br />
+            <form class="forms-sample" method="post">
+                <div class="form-group">
+                    <label for="exampleInputName1">Yazar Ad Soyad</label>
+                    <input type="text" asp-for="@Model.NameSurname" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail3">Kullanıcı Adı</label>
+                    <input type="text" asp-for="@Model.UserName" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail3">Mail Adresi</label>
+                    <input type="text" asp-for="@Model.Mail" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail3">Yeni Şifreniz</label>
+                    <input type="text" asp-for="@Model.Password" class="form-control">
+                </div>
+                @*<div class="form-group">
+                <label for="exampleInputPassword4">Şifre</label>
+                @Html.PasswordFor(x => x.PasswordHash, new {@class="form-control", @id="password1", @onkeyup="funcSifreOnay()"})
+                </div>*@
+                @*<div class="form-group">
+                <label for="exampleInputPassword4">Şifreyi Onayla</label>
+                Html.PasswordFor(x => x.PasswordHash, new { @class="form-control", @id="password2", @onkeyup="funcSifreOnay()" })
+                </div>*@
+                @*<div class="form-group">
+                <label id="passOnay" style="color:red;">Şifreler Eşleşmedi</label>
+                </div>*@
+                <div class="form-group">
+                    <label for="exampleInputEmail3">Resim Yolu</label>
+                    <input type="text" asp-for="@Model.ImageUrl" class="form-control">
+                </div>
+                @*<div class="form-group">
+                <label>Yazar Görsel</label>
+                <input type="file" name="img[]" class="file-upload-default">
+                <div class="input-group col-xs-12">
+                <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                <span class="input-group-append">
+                <button class="file-upload-browse btn btn-gradient-primary" type="button">Resim Seç</button>
+                </span>
+                </div>
+                </div>*@
+                @*<div class="form-group">
+                <label for="exampleTextarea1">Yazar Hakkında</label>
+                @Html.TextAreaFor(x => x.About, 10,3, new {@class="form-control"})
+                </div>*@
+                <button type="submit" id="kayit" title="Lütfen Şifrenizi Kontrol Edin !!" class="btn btn-gradient-primary mr-2">Güncelle</button>
+                <button asp-controller="/Dashboard" asp-action="Index" class="btn btn-light">Vazgeç</button>
+            </form>
+        </div>
+    </div>
+</div>
+@*<script>
+    function funcSifreOnay(){
+        var pass1 = $("#password1").val();
+        var pass2 = $("#password2").val();
+        if(pass1.length > 0 && pass2.length > 0 && pass1 == pass2){
+            $('#passOnay')[0].textContent="Şifreler Eşleşti."
+            document.getElementById("passOnay").style.color = "#01cd74"
+            document.getElementById("kayit").disabled = false;
+            document.getElementById("kayit").title="Şifreniz Onaylandı."
+        }else{
+            $('#passOnay')[0].textContent="Şifreler Eşleşmedi."
+            document.getElementById("passOnay").style.color = "red"
+            document.getElementById("kayit").disabled = true;
+            document.getElementById("kayit").title="Lütfen Şifrenizi Kontrol Edin !!"
+        }
+    }
+</script>*@

@@ -1,0 +1,93 @@
+﻿@model List<SigortaApp.Entity.Concrete.Unit>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <script src="~/LimitlessTheme/demo/pages/datatables_basic.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/ui/moment/moment.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/daterangepicker.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/datepicker.min.js"></script>
+
+    <script src="~/LimitlessTheme/demo/pages/picker_date.js"></script>
+
+    @* Select 2 için eklenti*@
+    <script src="~/LimitlessTheme/js/vendor/forms/selects/select2.min.js"></script>
+</head>
+
+<div class="card" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            Şirketler
+            @*<button type="button" class="btn btn-light" style="float:right;" data-bs-toggle="modal" data-bs-target="#taskModal">İş Ekle <i class="ph-plus-circle ms-2"></i></button>*@
+        </h5>
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered datatable-basic" id="taskTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Şirket No</th>
+                    <th>Adı</th>
+                    <th>Durumu</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td><a href="#">@item.Name</a></td>
+                        <td>
+                            @{
+                                if (item.IsActive)
+                                {
+                                    <p>Aktif</p>
+                                }
+                                else
+                                {
+                                    <p>Pasif</p>
+                                }
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="d-inline-flex">
+                                <a href="#" onclick="funcGetTaskHitoryDetails(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+                                <div class="dropdown">
+                                    <a href="#" class="text-body" data-bs-toggle="dropdown">
+                                        <i class="ph-list"></i>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-pdf me-2"></i>
+                                            Export to .pdf
+                                        </a>
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-xls me-2"></i>
+                                            Export to .csv
+                                        </a>
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-doc me-2"></i>
+                                            Export to .doc
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @*secondary--danger--info--*@
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,21 @@
+﻿@using SigortaApp.Web.Models
+@model RoleViewModel
+@{
+    ViewData["Title"] = "AddRole";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Rol Ekleme Sayfası</h1>
+
+<form method="post">
+    <div class="form-control">
+        <label>Rol Başlığı</label>
+        <input type="text" name="Name" class="form-control" />
+    </div>
+    <br />
+    @*<div asp-validation-summary="ModeOnly">
+
+    </div>*@
+
+    <button class="btn btn-info">Kaydet</button>
+</form>

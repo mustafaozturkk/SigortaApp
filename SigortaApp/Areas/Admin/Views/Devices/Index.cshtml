@@ -1,0 +1,181 @@
+﻿@using SigortaApp.Entity.Dto
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<List<DevicesUsersDto>>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@{
+    var list = Model.ToList();
+}
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+
+<h1>Depo Listesi</h1>
+<br />
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Kategori</th>
+            <th>Marka</th>
+            <th>Model</th>
+            @*<th>Seri Numarası</th>*@
+            @*<th>Açıklama</th>*@
+            <th>Dolap No</th>
+            <th>Ekleyen Kişi</th>
+            <th>Eklenen Tarih</th>
+            <th>Adet</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+                <tr>
+                    <th>@list[i][0].Id</th>
+                    <td>@list[i][0].Category.Name</td>
+                    <td>@list[i][0].Brand.Name</td>
+                    <td>@list[i][0].Types.Name</td>
+                    @*<td>@list[i][0].SerialNumber</td>*@
+                    @*<td>@list[i][0].Description</td>*@
+                    <td>@list[i][0].CupboardNumber</td>
+                    <td>@list[i][0].UserName</td>
+                    <td>@(((DateTime)list[i][0].CreatedDate).ToString("dd-MMM-yyyy"))</td>
+                    <td>@list[i].Count()</td>
+                    <td>
+                        @*<a href="/Admin/Devices/DeleteDevice/@list[i][0].Id" onclick="return confirm('Silmek istediğinize emin misiniz?');" class="btn btn-outline-danger">Sil</a>*@
+                        @*<a href="#" class="btn btn-outline-success" onclick="funcUpdateDevice(@list[i][0].Id)">Güncelle</a>*@
+                        <a href="/Admin/Devices/GetChildList/@list[i][0].TypesId" class="btn btn-outline-success">Detaylar</a>
+                    </td>
+                </tr>
+        }
+        
+    </tbody>
+</table>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal5">
+    Yeni Ürün
+</button>
+<br />
+<br />
+@Html.PagedListPager((IPagedList)Model,page=>Url.Action("Index", new { page}))
+
+<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Ürün Ekle</h4>
+            </div>
+            <form method="post" action="@Url.Action("AddDevices", "Devices")">
+                <div class="modal-body">
+                    <input type="text" id="devceid" name="Id" value="0" hidden />
+                    <div class="form-control">
+                        <label>Kategori</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @Html.DropDownList("CategoryId",ViewBag.cv,"Kategori Seçiniz..",new { @class = "form-control", @id="categoryid", @onchange="funcClearRows()" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Marka Adı</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @Html.DropDownList("BrandId",ViewBag.bv,"Marka Seçiniz..",new { @class = "form-control", @id="brandId", @onchange="funcGetTypes()" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Model Adı</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @*@Html.DropDownList("TypesId",List<null>,"Model Seçiniz..",new { @class = "form-control", @id="typesId" })*@
+                        <select id="typesId" class="form-control" name="TypesId">
+                            <option value="" disabled selected hidden>Model Seçiniz..</option>
+                        </select>
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Adet ile çıkış yapmak ister misiniz ?</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" id="chcsw2" onchange="funcGetCheck()" style="float: right;min-height: 1.95rem;" data-toggle="toggle" data-on="Evet" data-off="Hayır" data-onstyle="primary" data-offstyle="outline-danger">
+                    </div>
+                    <br />
+                    <div class="form-control" id="serinumberclass">
+                        <label>Seri Numarası</label>
+                        <textarea name="SerialNumber" id="serinumber" class="form-control"> </textarea>
+                    </div>
+                    <div class="form-control" id="numbernoclass" style="display:none;">
+                        <label>Adet</label>
+                        <input type="number" max="1000" min="1" id="numberno" name="Number" value="1" placeholder="Lütfen adet giriniz." class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Açıklama</label>
+                        <input type="text" name="Description" id="desc" class="form-control" placeholder="Sarf Malzeme ise metre/adet olarak belirtin." />
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Dolap No</label>
+                        <input type="number" max="10" min="0" id="cupboardno" name="CupboardNumber" value="0" placeholder="Lütfen sayı giriniz." class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Vazgeç</button>
+                    <input type="submit" class="btn btn-primary" value="Kaydet" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    function funcGetCheck() {
+        var a = $("#chcsw2")[0].checked;
+        if (a) {
+            $("#serinumberclass").hide();
+            $("#numbernoclass").show();
+        } else {
+            $("#serinumberclass").show();
+            $("#numbernoclass").hide();
+        }
+    }
+
+    function funcGetTypes(e) {
+        var brand = document.getElementById("brandId").value;
+        var category = document.getElementById("categoryid").value;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("TypesByBrand")",
+            data: { brandId: brand, categoryId: category },
+            dataType: "JSON",
+            success: function (msg) {
+                $('#typesId option').remove();
+                for (var i = 0; i < msg.length; i++) {
+                    var ddl = document.getElementById("typesId");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = msg[i].text;
+                    option.value = msg[i].value;
+                    ddl.options.add(option);
+                }
+
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
+
+    function funcClearRows(){
+        document.getElementById("brandId").value = "";
+        document.getElementById("typesId").value = "";
+    }
+
+</script>
+<style>
+    .toggle-off.btn {
+        padding-left: 1.2rem;
+    }
+</style>

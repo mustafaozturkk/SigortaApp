@@ -1,0 +1,36 @@
+﻿<div class="comment-top">
+    <h4>Bir yorum yapın</h4>
+    <div class="comment-bottom">
+        <div @*action="/Comment/PartialAddComment/" method="post"*@>
+            <input class="form-control" type="text" name="UserName" placeholder="Adınız Soyadınız" required="">
+            <input class="form-control" type="text" name="Title" placeholder="Konu" required="">
+            <textarea class="form-control" name="Content" placeholder="Yorumunuz..." required=""></textarea>
+            <button type="submit" onclick="YorumYap()" class="btn btn-primary submit">Yorum Yap</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    function YorumYap(){
+    var data = {
+        UserName:document.getElementsByName("UserName")[0].value,
+        Title:document.getElementsByName("Title")[0].value,
+        Content:document.getElementsByName("Content")[0].value
+    }
+        $.ajax({
+            type: 'POST',
+            url: '/Comment/PartialAddComment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                swal("İşlem Başarılı", "Kapatmak için tıklayınız!", "success");
+            },
+            error: function () {
+                swal("İşlem Başarısız", "Kapatmak için tıklayınız!", "error");
+            }
+        })
+    }
+
+</script>

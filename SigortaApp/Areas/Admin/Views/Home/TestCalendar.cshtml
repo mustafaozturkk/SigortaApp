@@ -1,0 +1,251 @@
+﻿@{
+    ViewData["Title"] = "Test";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<head>
+    <script src="~/LimitlessTheme/js/vendor/ui/fullcalendar/main.min.js"></script>
+
+    <script src="~/LimitlessTheme/demo/pages/fullcalendar_advanced.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/ui/fullcalendar/locales-all.min.js"></script>
+</head>
+
+<div class="card">
+    @*<div class="card-header">
+        <h5 class="mb-0">Selectable</h5>
+    </div>*@
+
+    <div class="card-body">
+        <div class="row">
+            <div>
+                <button class="btn btn-info" style="float: right;" type="button" data-bs-toggle="modal" onclick="ClearModal()" data-bs-target="#calendarModal">Yeni Randevu <i class="ph-plus-circle ms-2"></i></button>
+            </div>
+        </div>
+        <br />
+        <div class="fullcalendar-selectable2"></div>
+    </div>
+</div>
+
+<div id="calendarModal" class="modal fade" tabindex="-1" style="z-index:1;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Randevu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddCalendar", "Home")">
+                <div class="modal-body" style="background-color: #fbf9f9;">
+                    <div class="form-control">
+                        <input type="text" id="id" name="Id" value="0" hidden />
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Başlık</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="title" name="title" placeholder="Başlık Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Başlangıç Tarihi</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ph-calendar"></i></span>
+                                    @*<input type="text" name="BusDate" class="form-control daterange-single">@*value="DateTime.Now.ToString("DD/MMM/YYYY h:mm A")"*@
+                                    <input class="form-control" id="start" type="datetime-local" name="start">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Bitiş Tarihi</label>
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ph-calendar"></i></span>
+                                    @*<input type="text" name="BusDate" class="form-control daterange-single">@*value="DateTime.Now.ToString("DD/MMM/YYYY h:mm A")"*@
+                                    <input class="form-control" id="end" type="datetime-local" name="end">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Renk</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="color" name="color" placeholder="Renk Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="form-check-label col-lg-3" for="sc_li_c">Tüm gün mü ?</label>
+                            <div class="col-lg-9">
+                                <div class="form-check form-check-inline form-switch">
+                                    <input type="checkbox" name="allDay" checked value="true" class="form-check-input form-check-input-success" id="sc_li_c">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        
+    });
+
+
+    var todayDate = new Date().toISOString().slice(0, 10);
+    const events = [
+        {
+            title: 'Merhaba Dünya',
+            start: todayDate
+        }
+    ];
+    const calendarSelectableElement = document.querySelector('.fullcalendar-selectable2');
+
+    const calendarSelectableInit = new FullCalendar.Calendar(calendarSelectableElement, {
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        initialDate: todayDate,//Başlangıç tarihi
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: true,
+        eventSources: [{
+            url: '/Home/GetCalendar',
+            method: 'POST',
+            success: function (response) {
+                //window.alert("Başarılı");
+                return response.data;
+            },
+            failure: function () {
+                window.alert("Başarısız!!!");
+            }
+        }],
+        //events: events,
+        locale: 'tr',
+        //lang: 'tr',
+        select: function (arg) {
+            ClearModal();
+            $("#calendarModal").modal('show');
+            //const title = prompt('Event Title:');
+            //if (title) {
+            //    calendarSelectableInit.addEvent({
+            //        title: title,
+            //        start: arg.start,
+            //        end: arg.end,
+            //        allDay: arg.allDay
+            //    });
+            //}
+            //calendarSelectableInit.unselect();
+        },
+        eventClick: function (arg) {
+            openUpdateEventModal(arg.event);
+            //$("#calendarModal").modal('show');
+            //if (confirm('Silmek istediğinize emin misiniz?')) {
+            //    arg.event.remove();
+            //}
+        },
+        eventDrop: function (event, delta, revertFunc) {
+            openUpdateEventModalSuruklemeli(event);
+        },
+        editable: true,
+        direction: document.dir == 'rtl' ? 'rtl' : 'ltr',
+        dayMaxEvents: true // allow "more" link when too many events
+    });
+
+    // Init
+    calendarSelectableInit.render();
+
+    function ClearModal() {
+        document.getElementById("id").value = "";
+        document.getElementById("title").value = "";
+        document.getElementById("start").value = "";
+        document.getElementById("end").value = "";
+        document.getElementById("color").value = "";
+        document.getElementById("sc_li_c").checked = false;
+    }
+
+    function openUpdateEventModal(event) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCalendarById")",
+            data: { id: event.id },
+            success: function (response) {
+                ClearModal();
+                document.getElementById("id").value = response.id;
+                document.getElementById("title").value = response.title;
+                document.getElementById("start").value = response.start;
+                document.getElementById("end").value = response.end;
+                document.getElementById("color").value = response.color;
+                document.getElementById("sc_li_c").checked = response.allDay;
+                $("#calendarModal .modal-title").html("Randevu Düzenleme");
+                $("#calendarModal").modal('show');
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function openUpdateEventModalSuruklemeli(event) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCalendarById")",
+            data: { id: event.event._def.publicId },
+            success: function (response) {
+                const newStartDate = addDaysToDate(response.start, event.delta.days, 'start');
+                const newEndDate = addDaysToDate(response.end, event.delta.days, 'end');
+
+                $.ajax({
+                type: "POST",
+                url: "@Url.Action("EditSurukleCalendar")",
+                data: { id: event.event._def.publicId, start:newStartDate, end:newEndDate },
+                success: function (response2) {
+                    calendarSelectableInit.render();
+                    
+                },
+                error: function (req, status, error) {
+                    console.log(response2);
+                }
+                });
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function addDaysToDate(dateString, days, asd) {
+        // Gelen tarih stringini Date nesnesine çevir
+        const date = new Date(dateString);
+
+        // Tarihe gün ekle veya çıkar
+
+        date.setDate(date.getDate() + days);
+
+
+
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Ayları 0-11 arasında döndürdüğü için +1 ekliyoruz
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+
+        // Yeni tarihi ISO formatında döndür
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+</script>
+
+<style>
+    .modal {
+        overflow: hidden; /*hidden(iptal eder) Modal'ı sabitlemek için!!*/
+    }
+</style>

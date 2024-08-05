@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+	<div class="col-lg-4">
+
+		<!-- Members online -->
+		<div class="card bg-teal text-white">
+			<div class="card-body">
+				<div class="d-flex">
+					<h3 class="mb-0">@ViewBag.TotalTaskCount</h3>
+					<span class="badge bg-black bg-opacity-50 rounded-pill align-self-center ms-auto">@ViewBag.TotalDayTaskCount</span>
+				</div>
+
+				<div>
+					Toplam İş Sayısı
+					@*<div class="fs-sm opacity-75">@ViewBag.TotalTaskCount</div>*@
+				</div>
+			</div>
+
+			<div class="rounded-bottom overflow-hidden mx-3" id="members-online"></div>
+		</div>
+		<!-- /members online -->
+
+	</div>
+
+	<div class="col-lg-4">
+
+		<!-- Current server load -->
+		<div class="card bg-pink text-white">
+			<div class="card-body">
+				<div class="d-flex align-items-center">
+					<h3 class="mb-0">@ViewBag.TotalEndTaskCount</h3>
+					<span class="badge bg-black bg-opacity-50 rounded-pill align-self-center ms-auto">@ViewBag.TotalDayEndTaskCount</span>
+				</div>
+
+				<div>
+					Biten Toplam İş Sayısı
+					@*<div class="fs-sm opacity-75">@ViewBag.TotalEndTaskCount</div>*@
+				</div>
+			</div>
+
+			<div class="rounded-bottom overflow-hidden" id="server-load"></div>
+		</div>
+		<!-- /current server load -->
+
+	</div>
+
+	<div class="col-lg-4">
+
+		<!-- Today's revenue -->
+		<div class="card bg-primary text-white">
+			<div class="card-body">
+				<div class="d-flex align-items-center">
+					<h3 class="mb-0">@ViewBag.OtogardaBekleyenCount</h3>
+				</div>
+
+				<div>
+					Otogarda Bekleyen İş Sayısı
+					@*<div class="fs-sm opacity-75">$37,578 avg</div>*@
+				</div>
+			</div>
+
+			<div class="rounded-bottom overflow-hidden" id="today-revenue"></div>
+		</div>
+		<!-- /today's revenue -->
+
+	</div>
+</div>

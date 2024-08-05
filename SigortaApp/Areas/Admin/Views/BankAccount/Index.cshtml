@@ -1,0 +1,188 @@
+﻿@using SigortaApp.Entity.Concrete;
+@model List<BankAccount>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card" id="cardCss2" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            Bankalar
+            <button type="button" class="btn btn-light" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#bankAccountModal">Banka Ekle <i class="ph-plus-circle ms-2"></i></button>
+        </h5>
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered datatable-basic" id="bankAccountTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Banka No</th>
+                    <th>Adı</th>
+                    <th>Hesap Adı</th>
+                    <th>Hesap No</th>
+                    <th>IBAN</th>
+                    <th>Hesap Bakiye</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.AccountName</td>
+                        <td>@item.AccountNumber</td>
+                        <td>@item.IBAN</td>
+                        <td>@item.AccountAmount</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex">
+                                <a href="/Admin/BankAccount/Details/@item.Id"><i class="ph-eye"></i></a>&nbsp;&nbsp;&nbsp;
+                                <a href="#" onclick="funcGetBankAccount(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;@*TODO!!!!*@
+                                <a href="#" onclick="funcDeleteBankAccount(@item.Id)" id="sweet_combine"><i class="ph-trash"></i></a>&nbsp;&nbsp;&nbsp;@*TODO!!!!*@
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @*secondary--danger--info--*@
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="bankAccountModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Banka Hesabı</h5>
+                <button type="button" class="btn-close" onclick="funcCardCssSetClear()" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddBankAccount", "BankAccount")">
+                <div class="modal-body" style="background-color: #fbf9f9;">
+                    <div class="form-control">
+                        <input type="text" id="bankAccountId" name="Id" value="0" hidden />
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Adı</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="bankAccountName" name="Name" placeholder="Banka Adı Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Hesap Adı</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="bankAccountNameAccount" name="AccountName" placeholder="Hesap Adı Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Hesap No</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="bankAccountNumber" name="AccountNumber" placeholder="Hesap Numarası Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">IBAN</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="bankAccountIban" name="IBAN" placeholder="IBAN Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Hesap Bakiye</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="bankAccountAmount" name="AccountAmount" placeholder="Hesap Bakiyesi Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="form-check-label col-lg-3" for="sc_li_c">Aktif Mi</label>
+                            <div class="col-lg-9">
+                                <div class="form-check form-check-inline form-switch">
+                                    <input type="checkbox" name="IsActive" checked value="true" class="form-check-input form-check-input-success" id="sc_li_c">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" onclick="funcCardCssSetClear()" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function funcGetBankAccount(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetBankAccount")",
+            data: { bankAccountId: id },
+            success: function (response) {
+                $("#bankAccountModal").modal('show');
+                document.getElementById("bankAccountId").value = response.id;
+                document.getElementById("bankAccountName").value = response.name;
+                document.getElementById("bankAccountNameAccount").value = response.accountName;
+                document.getElementById("bankAccountNumber").value = response.accountNumber;
+                document.getElementById("bankAccountIban").value = response.iban;
+                document.getElementById("bankAccountAmount").value = response.accountAmount;
+                //document.getElementById("sc_li_c").checked = response.isActive;
+                document.getElementById("cardCss2").style.opacity = 0.35;
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcDeleteBankAccount(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("DeleteBankAccount")",
+            data: { bankAccountId: id },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCardCssSet() {
+        document.getElementById("cardCss2").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss2").style.opacity = 1;
+    }
+</script>
+
+<style>
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*.modal-backdrop.fade {
+                            opacity:0;
+                        }*/
+    .page-content {
+        z-index: 1;
+    }
+
+    /*.card{
+                            opacity:0.35;
+                        }*/
+
+</style>

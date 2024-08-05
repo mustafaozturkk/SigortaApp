@@ -1,0 +1,36 @@
+﻿@model List<SigortaApp.Entity.Dto.TaskDto>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered datatable-basic" id="taskTable" width="100%">
+        <thead>
+            <tr>
+                <th>İş No</th>
+                <th>Alınacak Şirket</th>
+                <th>Gönderilecek Şirket</th>
+                <th>Seçim</th>
+                @*<th class="text-center">İşlemler</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.Id</td>
+                    <td>@item.OrderCompany.Name</td>
+                    <td>@item.SendCompany.Name</td>
+                    <td>
+                        <div class="form-check mb-2">
+                            <input type="checkbox" class="form-check-input form-check-input-success" name="tasksotogar" value="@item.Id" id="cc_ls_c">
+                            @*<label class="form-check-label" for="cc_ls_c">Checked</label>*@
+                        </div>
+                        @*<div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                        </div>*@
+                    </td>
+                </tr>
+            }
+            @*secondary--danger--info--*@
+        </tbody>
+    </table>
+</div>

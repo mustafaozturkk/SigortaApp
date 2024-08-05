@@ -1,0 +1,212 @@
+﻿@model List<SigortaApp.Entity.Concrete.PaymentTask>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <script src="~/LimitlessTheme/demo/pages/datatables_basic.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/ui/moment/moment.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/daterangepicker.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/datepicker.min.js"></script>
+
+    <script src="~/LimitlessTheme/demo/pages/picker_date.js"></script>
+
+    @* Select 2 için eklenti*@
+    <script src="~/LimitlessTheme/js/vendor/forms/selects/select2.min.js"></script>
+</head>
+
+<div class="card" id="cardCss" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            Ödemeler
+            @*<button type="button" class="btn btn-light" style="float:right;" data-bs-toggle="modal" data-bs-target="#taskModal">İş Ekle <i class="ph-plus-circle ms-2"></i></button>*@
+        </h5>
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered datatable-basic" id="taskTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Ödeme No</th>
+                    <th>İş No</th>
+                    <th>Şirket</th>
+                    <th>Cari/Nakit</th>
+                    <th>Tutar</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td><a href="#" onclick="funcGetTaskHitoryDetails(@item.TaskId)">@item.TaskId</a></td>
+                        <td><a>@item.Company.Name</a></td>
+                        <td>
+                            @{
+                                if (item.CariMi)
+                                {
+                                    <p>Cari</p>
+                                }
+                                else
+                                {
+                                    <p>Nakit</p>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (item.PaymentReceived)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success">@item.Price₺</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger bg-opacity-10 text-danger">@item.Price₺</span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            @{
+                                if (item.PaymentReceived)
+                                {
+                                    <p style="color:green;">Ödendi</p>
+                                }
+                                else
+                                {
+                                    <p style="color:red;">Ödenmedi</p>
+                                }
+                            }
+                        </td>
+                        <td>@item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex">
+                                @{
+                                    @if (item.PaymentReceived)
+                                    {
+
+                                        <i style="color:#059669;" class="ph-check-circle"></i>
+                                    }
+                                    else
+                                    {
+                                        <a href="/Admin/PaymentTask/GetPaidById/@item.Id">
+                                            <i style="color:red;" class="ph-circle-wavy-check"></i>
+                                        </a>
+                                    }
+                                }
+                                &nbsp; &nbsp; &nbsp;
+                                @*<div class="dropdown">
+                                    <a href="#" class="text-body" data-bs-toggle="dropdown">
+                                        <i class="ph-list"></i>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-pdf me-2"></i>
+                                            Export to .pdf
+                                        </a>
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-xls me-2"></i>
+                                            Export to .csv
+                                        </a>
+                                        <a href="#" class="dropdown-item">
+                                            <i class="ph-file-doc me-2"></i>
+                                            Export to .doc
+                                        </a>
+                                    </div>
+                                </div>*@
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @*secondary--danger--info--*@
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="taskHistoryModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:lavender">
+            <div class="modal-header">
+                <h5 class="modal-title">İş Detayı</h5>
+                <button type="button" class="btn-close" onclick="funcCloseModal()" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="background-color: #fbf9f9;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="funcCloseModal()" data-bs-dismiss="modal">Kapat</button>
+                @*<button type="submit" class="btn btn-primary">Kaydet</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function funcGetTaskHitoryDetails(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TaskHistoryDetails","Task")",
+            data: { taskId: id },
+            success: function (response) {
+                $("#taskHistoryModal").find(".modal-body").html(response);
+                $("#taskHistoryModal").modal('show');
+                funcCardCssSet();
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCardCssSet() {
+        document.getElementById("cardCss").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+
+    function funcCloseModal() {
+        $("#taskHistoryModal").modal('hide');
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+
+</script>
+
+<style>
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*.modal-backdrop.fade {
+                                                opacity:0;
+                                            }*/
+    .page-content {
+        z-index: 1;
+    }
+
+    /*.card{
+                                                opacity:0.35;
+                                            }*/
+
+</style>

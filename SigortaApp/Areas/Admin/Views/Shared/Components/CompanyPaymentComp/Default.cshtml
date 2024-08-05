@@ -1,0 +1,123 @@
+﻿@using SigortaApp.Entity.Dto;
+@using System.Globalization;
+@using SigortaApp.Entity.Enums;
+@model List<PaymentDto>
+
+
+<div class="card" id="cardCss">
+    <div class="table-responsive">
+        <table id="paymentTable" class="table table-bordered datatable-excel-filter" style="width:100%">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>İşlem Tipi</th>
+                    <th>Ödeme Şekli</th>
+                    <th>Açıklama</th>
+                    <th>Tutar</th>
+                    <th>Tarih</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        @if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Odeme)
+                        {
+                            <th><span class="badge bg-danger bg-opacity-20 text-danger">@item.StatusName</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Tahsilat)
+                        {
+                            <th><span class="badge bg-success bg-opacity-20 text-success">@item.StatusName</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Alacaklandirma)
+                        {
+                            <th><span class="badge bg-info bg-opacity-20 text-info">@item.StatusName</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Borclandirma)
+                        {
+                            <th><span class="badge bg-warning bg-opacity-20 text-warning">@item.StatusName</span></th>
+                        }
+                        <td>@item.PaymentMethodName</td>
+                        <td>@item.Description</td>
+                        @if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Odeme)
+                        {
+                            <th><span class="badge bg-danger bg-opacity-20 text-danger">@string.Format(new CultureInfo("tr-TR"), "{0:C}",item.Price)</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Tahsilat)
+                        {
+                            <th><span class="badge bg-success bg-opacity-20 text-success">@string.Format(new CultureInfo("tr-TR"), "{0:C}",item.Price)</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Alacaklandirma)
+                        {
+                            <th><span class="badge bg-info bg-opacity-20 text-info">@string.Format(new CultureInfo("tr-TR"), "{0:C}",item.Price)</span></th>
+                        }
+                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Borclandirma)
+                        {
+                            <th><span class="badge bg-warning bg-opacity-20 text-warning">@string.Format(new CultureInfo("tr-TR"), "{0:C}",item.Price)</span></th>
+                        }
+                        <td>@item.CreatedDate.Date.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <div class="d-inline-flex">
+                                @*<a href="/Admin/Company/GetCompanyDetails/@item.Id"><i class="ph-eye"></i></a>&nbsp;&nbsp;&nbsp;*@
+                                <a href="#" onclick="funcGetPayment(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+                                <a href="#" onclick="funcDeletePayment(@item.Id)" id="sweet_combine"><i class="ph-trash"></i></a>&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function funcGetPayment(e) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetPaymentById","Payment")",
+            data: { paymentId: e },
+            success: function (response) {
+
+                if (response.statusId == @((int)OdemeTuruEnum.Borclandirma)){
+                    funcStatusBorclanir();
+                }else if (response.statusId == @((int)OdemeTuruEnum.Alacaklandirma)){
+                    funcStatusAlacaklandir();
+                }else if (response.statusId == @((int)OdemeTuruEnum.Odeme)){
+                    funcStatusOdeme();
+                }else if (response.statusId == @((int)OdemeTuruEnum.Tahsilat)){
+                    funcStatusTahsilatYap();
+                }
+                $("#modalOdeme").modal('show');
+                document.getElementById("payId").value = response.id;
+                document.getElementById("statusid").value = response.statusId;
+                document.getElementById("companyid").value = response.companyId;
+                document.getElementById("creatDate").value = response.createdDate;
+                $("#paymentMethodId").val(response.paymentMethodId).trigger('change');
+                $("#bankAccountId").val(response.bankAccountId).trigger('change');
+                $("#caseId").val(response.caseId).trigger('change');
+                document.getElementById("desc").value = response.description;
+                document.getElementById("currency-field").value = response.price;
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcDeletePayment(e){
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("DeletePayment","Payment")",
+            data: { paymentId: e },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+</script>

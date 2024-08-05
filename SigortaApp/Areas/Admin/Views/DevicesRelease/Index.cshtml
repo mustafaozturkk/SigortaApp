@@ -1,0 +1,247 @@
+﻿@using SigortaApp.Entity.Concrete
+@using SigortaApp.Entity.Dto
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<DevicesReleaseUsersDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+
+<h1>Çıkış Listesi</h1>
+<br />
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Kategori</th>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Seri Numarası</th>
+            <th>Açıklama</th>
+            <th>Gönderildiği İl</th>
+            <th>Ptt Gönderim Kodu</th>
+            <th>Ekleyen Kişi</th>
+            <th>Eklenen Tarih</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@item.Id</th>
+                <td>@item.Category.Name</td>
+                <td>@item.Brand.Name</td>
+                <td>@item.Types.Name</td>
+                <td>@item.SerialNumber</td>
+                <td>@item.Description</td>
+                <td>@item.GoingToUnitName</td>
+                <td>@item.ShippingPostCode</td>
+                <td>@item.UserName</td>
+                <td>@(((DateTime)item.CreatedDate).ToString("dd-MMM-yyyy"))</td>
+                <td>
+                    <a href="/Admin/Devices/DeleteDevice/@item.Id" onclick="return confirm('Silmek istediğinize emin misiniz?');" class="btn btn-outline-danger">Sil</a>
+                    <a href="#" class="btn btn-outline-success" onclick="funcUpdateDevice(@item.Id)">Güncelle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal5">
+    Yeni Çıkacak Ürün
+</button>
+<br />
+<br />
+@Html.PagedListPager((IPagedList)Model,page=>Url.Action("Index", new { page}))
+
+<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Çıkış Yapılacak Ürünler</h4>
+            </div>
+            <form method="post" action="@Url.Action("AddDevicesRelease", "DevicesRelease")">
+                <div class="modal-body">
+                    <input type="text" id="devceid" name="Id" value="0" hidden />
+                    <div class="form-control">
+                        <label>Yer Seçiniz</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @Html.DropDownList("UstId",ViewBag.uuv,"Yer Seçiniz..",new { @class = "form-control", @id="ustId", @onchange="funcGetUnits()" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Gidecek İl</label>
+                        <select id="unitsId" class="form-control" name="GoingToUnit">
+                            <option value="" disabled selected hidden>Gidecek İli Seçiniz..</option>
+                        </select>
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Adet ile çıkış yapmak ister misiniz ?</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" id="chcsw2" onchange="funcGetCheck()" style="float: right;min-height: 1.95rem;" data-toggle="toggle" data-on="Evet" data-off="Hayır" data-onstyle="primary" data-offstyle="outline-danger">
+                    </div>
+                    <br />
+                    <div class="form-control" id="serinumberclass">
+                        <label>Seri Numarası</label>
+                        <textarea name="SerialNumber" id="serinumber" class="form-control"> </textarea>
+                    </div>
+                    <div class="form-control" id="cabrtyclass" style="display:none;">
+                        <div class="form-control">
+                            <label>Kategori</label>
+                            @Html.DropDownList("CategoryId",ViewBag.cv,"Kategori Seçiniz..",new { @class = "form-control", @id="categoryid", @onchange="funcClearRows()" })
+                        </div>
+                        <br />
+                        <div class="form-control">
+                            <label>Marka Adı</label>
+                            @Html.DropDownList("BrandId",ViewBag.bv,"Marka Seçiniz..",new { @class = "form-control", @id="brandId", @onchange="funcGetTypes()" })
+                        </div>
+                        <br />
+                        <div class="form-control">
+                            <label>Model Adı</label>
+                            <select id="typesId" class="form-control" name="TypesId">
+                                <option value="" disabled selected hidden>Model Seçiniz..</option>
+                            </select>
+                        </div>
+                        <br />
+                        <div class="form-control" id="numbernoclass" style="display:none;">
+                            <label>Adet</label>
+                            <input type="number" max="1000" min="1" id="numberno" name="Number" value="1" placeholder="Lütfen adet giriniz." class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Açıklama</label>
+                        <input type="text" name="Description" id="desc" class="form-control" placeholder="Sarf Malzeme ise metre/adet olarak belirtin." />
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Ptt Gönderi Kodu</label>
+                        <input type="text" name="ShippingPostCode" id="shippostcode" class="form-control" />
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Vazgeç</button>
+                    <input type="submit" class="btn btn-primary" value="Kaydet" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+
+    function funcGetCheck(){
+        var a = $("#chcsw2")[0].checked;
+        if(a){
+            $("#serinumberclass").hide();
+            $("#numbernoclass").show();
+            $("#cabrtyclass").show();
+        }else{
+            $("#serinumberclass").show();
+            $("#numbernoclass").hide();
+            $("#cabrtyclass").hide();
+        }
+    }
+    
+    function funcGetUnits(e) {
+        var ustId = document.getElementById("ustId").value;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("Cities")",
+            data: { ustid: ustId },
+            dataType: "JSON",
+            success: function (msg2) {
+                $('#unitsId option').remove();
+                for (var i = 0; i < msg2.length; i++) {
+                    var ddl = document.getElementById("unitsId");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = msg2[i].text;
+                    option.value = msg2[i].value;
+                    ddl.options.add(option);
+                }
+
+            },
+            error: function (req, status, error) {
+                console.log(msg2);
+            }
+        });
+    }
+
+    function funcModalRefresh() {
+        document.getElementById("categoryid").value = "";
+        document.getElementById("brandId").value = "";
+        document.getElementById("typesId").value = "";
+        document.getElementById("serinumber").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("cupboardno").value = "";
+        document.getElementById("devceid").value = "";
+        document.getElementById("numberno").value = "";
+    }
+
+    function funcUpdateDevice(id) {
+        $.ajax({
+            url: '/Admin/Devices/UpdateDevices/' + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function (results2) {
+                $("#myModal5").modal();
+                funcModalRefresh();
+                document.getElementById("categoryid").value = results2.categoryId;
+                document.getElementById("brandId").value = results2.brandId;
+                funcGetTypes();
+                document.getElementById("typesId").value = results2.typesId;
+                document.getElementById("serinumber").value = results2.serialNumber;
+                document.getElementById("desc").value = results2.description;
+                document.getElementById("cupboardno").value = results2.cupboardNumber;
+                document.getElementById("devceid").value = results2.id;
+            }
+        });
+    }
+
+    function funcGetTypes(e) {
+        var brand = document.getElementById("brandId").value;
+        var category = document.getElementById("categoryid").value;
+
+        $.ajax({
+            type: "GET",
+            url: '/Admin/Devices/TypesByBrand/',
+            data: { brandId: brand, categoryId: category },
+            dataType: "JSON",
+            success: function (msg) {
+                $('#typesId option').remove();
+                for (var i = 0; i < msg.length; i++) {
+                    var ddl = document.getElementById("typesId");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = msg[i].text;
+                    option.value = msg[i].value;
+                    ddl.options.add(option);
+                }
+
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
+
+    function funcClearRows() {
+        document.getElementById("brandId").value = "";
+        document.getElementById("typesId").value = "";
+    }
+
+</script>
+<style>
+    .toggle-off.btn {
+        padding-left: 1.2rem;
+    }
+</style>

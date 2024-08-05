@@ -1,0 +1,348 @@
+﻿@using SigortaApp.Entity.Dto;
+@model CaseDto
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@{
+    var giris = Model.Payments.Where(w => w.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Tahsilat).Sum(s => Convert.ToDecimal(s.Price));
+    var cikis = Model.Payments.Where(w => w.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Odeme).Sum(s => Convert.ToDecimal(s.Price));
+    var giriscases = Model.CaseAccount.Where(w => w.IsIn).Sum(s => Convert.ToDecimal(s.Price));
+    var cikiscases = Model.CaseAccount.Where(w => !w.IsIn).Sum(s => Convert.ToDecimal(s.Price));
+    var girisTotal = giris + giriscases;
+    var cikisTotal = cikis + cikiscases;
+    var bakiye = girisTotal - cikisTotal;
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <h5 class="mb-0"><i class="ph-bank ms-2"></i>&nbsp;&nbsp;&nbsp;@Model.Name.ToUpper() KASASI</h5>
+            </div>
+
+            <div class="card-body pb-0">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <a href="#" class="bg-success bg-opacity-10 text-success lh-1 rounded-pill p-2 me-3">
+                                <i class="ph-arrow-right"></i>
+                            </a>
+                            <div>
+                                <div class="fw-semibold">GİRİŞ</div>
+                                <span class="text-muted">₺ @girisTotal</span>
+                            </div>
+                        </div>
+                        <div class="w-75 mx-auto mb-3" id="new-visitors"></div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <a href="#" class="bg-warning bg-opacity-10 text-warning lh-1 rounded-pill p-2 me-3">
+                                <i class="ph-arrow-left"></i>
+                            </a>
+                            <div>
+                                <div class="fw-semibold">ÇIKIŞ</div>
+                                <span class="text-muted">₺ @cikisTotal</span>
+                            </div>
+                        </div>
+                        <div class="w-75 mx-auto mb-3" id="new-sessions"></div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <a href="#" class="bg-indigo bg-opacity-10 text-indigo lh-1 rounded-pill p-2 me-3">
+                                <i class="ph-money"></i>
+                            </a>
+                            <div>
+                                <div class="fw-semibold">BAKİYE</div>
+                                @if (bakiye > 0)
+                                {
+                                    <span class="text-muted" style="color:green !important">₺ @bakiye</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted" style="color:red !important">₺ @bakiye</span>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="w-75 mx-auto mb-3" id="total-online"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart position-relative" id="traffic-sources"></div>
+        </div>
+        <div>
+            <div class="card" id="cardCss">
+                <div class="table-responsive">
+                    <table id="bankTable" class="table table-bordered datatable-excel-filter" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cari</th>
+                                <th>İşlem Tipi</th>
+                                <th>Ödeme Şekli</th>
+                                <th>Açıklama</th>
+                                <th>Tutar</th>
+                                <th>Tarih</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Payments)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Company.Name</td>
+                                    @if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Odeme)
+                                    {
+                                        <th><span class="badge bg-danger bg-opacity-20 text-danger">@item.StatusName</span></th>
+                                    }
+                                    else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Tahsilat)
+                                    {
+                                        <th><span class="badge bg-success bg-opacity-20 text-success">@item.StatusName</span></th>
+                                    }
+                                    else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Alacaklandirma)
+                                    {
+                                        <th><span class="badge bg-info bg-opacity-20 text-info">@item.StatusName</span></th>
+                                    }
+                                    else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Borclandirma)
+                                    {
+                                        <th><span class="badge bg-warning bg-opacity-20 text-warning">@item.StatusName</span></th>
+                                    }
+                                    <td>@item.PaymentMethodName</td>
+                                    <td>@item.Description</td>
+                                    @if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Odeme)
+                                    {
+                                        <th><span class="badge bg-danger bg-opacity-20 text-danger">₺&nbsp;@item.Price</span></th>
+                                    }
+                                    else if (item.StatusId == (int)SigortaApp.Entity.Enums.OdemeTuruEnum.Tahsilat)
+                                    {
+                                        <th><span class="badge bg-success bg-opacity-20 text-success">₺&nbsp;@item.Price</span></th>
+                                    }
+                                    <td>@item.CreatedDate.Date.ToString("dd/mm/yyyy")</td>
+                                    <td></td>
+                                </tr>
+                            }
+                            @foreach (var item in Model.CaseAccount)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>KASA HESABI</td>
+                                    @if (item.IsIn)
+                                    {
+                                        <th><span class="badge bg-success bg-opacity-20 text-success">GİRİŞ</span></th>
+                                    }
+                                    else
+                                    {
+                                        <th><span class="badge bg-danger bg-opacity-20 text-danger">ÇIKIŞ</span></th>
+                                    }
+                                    <td>@item.PaymentMethodName</td>
+                                    <td>@item.Description</td>
+                                    @if (!item.IsIn)
+                                    {
+                                        <th><span class="badge bg-danger bg-opacity-20 text-danger">₺&nbsp;@item.Price</span></th>
+                                    }
+                                    else
+                                    {
+                                        <th><span class="badge bg-success bg-opacity-20 text-success">₺&nbsp;@item.Price</span></th>
+                                    }
+                                    <td>@item.CreatedDate.Date.ToString("dd/MM/yyyy")</td>
+                                    <td>İşlemler</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <h5 class="mb-0"><i class="ph-pencil ms-2"></i>&nbsp; İşlemler</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <button type="button" class="btn btn-success" style="float:right;" data-bs-toggle="modal" onclick="funcStatusGiris()" data-bs-target="#modalOdeme2"><i class="ph-plus-circle ms-2"></i>&nbsp; Giriş Yap </button>
+                </div>
+                <br />
+                <div class="row">
+                    <button class="btn btn-danger" data-bs-toggle="modal" onclick="funcStatusCikis()" data-bs-target="#modalOdeme2" type="button"><i class="ph-plus-circle ms-2"></i>&nbsp; Çıkış Yap</button>
+                </div>
+                <br />
+                <div class="row">
+                    <button class="btn btn-info" data-bs-toggle="modal" onclick="funcStatusKasayaVirman()" data-bs-target="#modalOdeme2" type="button"><i class="ph-plus-circle ms-2"></i>&nbsp; Kasaya Virman</button>
+                </div>
+                <br />
+                <div class="row">
+                    <button class="btn btn-info" data-bs-toggle="modal" onclick="funcStatusBankayaVirman()" data-bs-target="#modalOdeme2" type="button"><i class="ph-plus-circle ms-2"></i>&nbsp; Bankaya Virman</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalOdeme2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitleId">Ödeme</h5>
+                <button type="button" class="btn-close" onclick="funcCardCssSetClear()" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" action="@Url.Action("AddBankAndCaseDetails", "BankAndCaseDetails")">
+                <div class="modal-body">
+                    <input type="text" id="isin" name="IsIn" value="0" hidden />
+                    <input type="text" id="case2Id" name="CaseId" value="0" hidden />
+                    <input type="text" id="isvirman" name="IsVirman" value="0" hidden />
+                    <div class="form-control">
+                        <label>Tarih</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="ph-calendar"></i></span>
+                            @*<input type="text" name="BusDate" class="form-control daterange-single">@*value="DateTime.Now.ToString("DD/MMM/YYYY h:mm A")"*@
+                            <input class="form-control" type="datetime-local" name="Date">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-control" id="PaymentMethodDiv">
+                        <label>Ödeme Türü</label>
+                        @Html.DropDownList("PaymentMethodId",ViewBag.uv,"Ödeme Türü Seçiniz..",new { @class = "form-control select", @id="paymentTypeId" })
+                    </div>
+                    <br />
+                    <div class="form-control" id="bankDiv">
+                        <label>Banka Seçimi</label>
+                        @Html.DropDownList("BankVirman",ViewBag.bav,"Banka Seçiniz..",new { @class = "form-control select", @id="bankAccountId" })
+                    </div>
+                    <div class="form-control" id="kasaDiv">
+                        <label>Kasa Seçimi</label>
+                        @Html.DropDownList("CaseVirman",ViewBag.cas,"Kasa Seçiniz..",new { @class = "form-control select", @id="caseId" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Açıklama</label>
+                        <input type="text" name="Description" id="desc" class="form-control" placeholder="Açıklama girebilirsiniz.." />
+                    </div>
+                    <br />
+                    <div class="form-control" id="priceclass222">
+                        <label>Tutar (₺)</label>
+                        <input type="number" name="Price" class="form-control" id="currency-field" @*pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$"*@ value="" @* data-type="currency"*@ placeholder="₺1,000,000.00">
+                        @*<input type="number" max="1000000000"  min="1" id="price" name="Price" value="1" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required />*@
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" onclick="funcCardCssSetClear()" data-bs-dismiss="modal">Vazgeç</button>
+                    <input type="submit" class="btn btn-primary" value="Kaydet" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function funcStatusGiris() {
+        document.getElementById("isin").value = true;
+        document.getElementById("case2Id").value = @Model.Id;
+        document.getElementById("isvirman").value = false;
+        $('#bankDiv').hide();
+        $('#kasaDiv').hide();
+        $('#PaymentMethodDiv').show();
+        $("#modalOdeme2").find('.modal-title').text("Giriş Yap");
+    }
+
+    function funcStatusCikis() {
+        document.getElementById("isin").value = false;
+        document.getElementById("case2Id").value = @Model.Id;
+        document.getElementById("isvirman").value = false;
+        $('#bankDiv').hide();
+        $('#kasaDiv').hide();
+        $('#PaymentMethodDiv').show();
+        $("#modalOdeme2").find('.modal-title').text("Çıkış Yap");
+    }
+
+    function funcStatusBankayaVirman() {
+        document.getElementById("isin").value = false;
+        document.getElementById("case2Id").value = @Model.Id;
+        document.getElementById("isvirman").value = true;
+        $('#bankDiv').show();
+        $('#kasaDiv').hide();
+        $('#PaymentMethodDiv').hide();
+        document.getElementById("paymentTypeId").value = @((int)SigortaApp.Entity.Enums.OdemeTuruEnum.Nakit);
+        $("#modalOdeme2").find('.modal-title').text("Bankaya Virman");
+    }
+
+    function funcStatusKasayaVirman() {
+        document.getElementById("isin").value = false;
+        document.getElementById("case2Id").value = @Model.Id;
+        document.getElementById("isvirman").value = true;
+        $('#bankDiv').hide();
+        $('#PaymentMethodDiv').hide();
+        $('#kasaDiv').show();
+        document.getElementById("paymentTypeId").value = @((int)SigortaApp.Entity.Enums.OdemeTuruEnum.Nakit);
+        $("#modalOdeme2").find('.modal-title').text("Kasaya Virman");
+    }
+
+    $("#paymentTypeId").select2({
+        placeholder: "Ödeme Türü Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#modalOdeme2')
+    });
+
+    $("#bankAccountId").select2({
+        placeholder: "Banka Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#modalOdeme2')
+    });
+
+    $("#caseId").select2({
+        placeholder: "Kasa Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#modalOdeme2')
+    });
+
+    function funcCardCssSet() {
+        document.getElementById("cardCss").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+</script>
+
+<style>
+    .toggle-off.btn {
+        padding-left: 1.2rem;
+    }
+
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*.modal-backdrop.fade {
+                                                                                                                                                                                                        opacity:0;
+                                                                                                                                                                                                    }*/
+    .page-content {
+        z-index: 1;
+    }
+
+    /*.card{
+                                                                                                                                                                                                        opacity:0.35;
+                                                                                                                                                                                                    }*/
+</style>

@@ -1,0 +1,124 @@
+﻿@using SigortaApp.Entity.Dto
+@model EndTaskDto
+@{
+    ViewData["Title"] = "EndTask";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<script src="~/LimitlessTheme/js/vendor/forms/wizards/steps.min.js"></script>
+<script src="~/LimitlessTheme/js/vendor/forms/validation/validate.min.js"></script>
+
+<script src="~/LimitlessTheme/demo/pages/form_wizard.js"></script>
+
+<script src="~/LimitlessTheme/js/vendor/uploaders/fileinput/fileinput.min.js"></script>
+<script src="~/LimitlessTheme/js/vendor/uploaders/fileinput/plugins/sortable.min.js"></script>
+
+<script src="~/LimitlessTheme/demo/pages/uploader_bootstrap.js"></script>
+
+<script src="~/LimitlessTheme/js/vendor/forms/selects/bootstrap_multiselect.js"></script>
+
+<script src="~/LimitlessTheme/demo/pages/form_multiselect.js"></script>
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h6 class="mb-0"> # No'lu İşi Bitirme Ekranı</h6>
+    </div>
+
+    <form class="wizard-form steps-validation" asp-action="EndTaskFunc" asp-controller="Task" enctype="multipart/form-data">
+        <h6>Otobüs Bilgisi</h6>
+        <fieldset>
+            <div class="row">
+                <div class="card2">
+                    <div class="card2-body">
+                        @*<p class="mb-3">Bootstrap <code>file input</code> plugin enhances the HTML 5 file input for Bootstrap 3.x into an advanced widget with file preview for various files, multiple selection and more. The plugin enhances these concepts and simplifies the widget initialization with simple HTML markup on a file input. It offers support for previewing a wide variety of files i.e. images, text, html, video, audio, flash, and objects.</p>*@
+
+                        @*<p class="fw-semibold">Example</p>*@
+                        <input type="file" asp-for="Files" class="file-input" multiple="multiple">
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label">Otobüs Telefon:</label>
+                        <input type="text" name="OtoTel" class="form-control required" placeholder="+99-99-9999-9999">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <label class="form-label">Otobüs Saati:</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ph-calendar"></i></span>
+                        <input class="form-control required" type="datetime-local" name="BusDate">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h6>İşler</h6>
+        <fieldset>
+            <div class="row">
+                <div class="mb-3">
+                    <label class="col-form-label col-lg-3">İş No Seçiniz</label>
+                    <div class="col-lg-9">
+                        <div class="d-md-flex">
+                            <div class="flex-grow-1">
+                                <select class="form-control multiselect-toggle-selection" data-include-select-all-option="true" data-enable-filtering="true" data-enable-case-insensitive-filtering="true" name="Task[]" asp-items="ViewBag.Tasks" multiple="multiple">
+                                </select>
+                            </div>
+
+                            <div class="btn-group flex-shrink-0 ms-md-3">
+                                <button type="button" class="btn btn-light multiselect-toggle-selection-button">Hepsini Seç</button>
+                            </div>
+                        </div>
+
+                        @*<div class="form-text">Use the button to toggle the selection. Don't forget to include <code>$.uniform.update();</code> to update checkboxes or radios state dynamically.</div>*@
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <h6>Parça Resimleri</h6>
+        <fieldset>
+            <div class="row">
+                <div class="card2">
+                    <div class="card2-body">
+                        @*<p class="mb-3">Bootstrap <code>file input</code> plugin enhances the HTML 5 file input for Bootstrap 3.x into an advanced widget with file preview for various files, multiple selection and more. The plugin enhances these concepts and simplifies the widget initialization with simple HTML markup on a file input. It offers support for previewing a wide variety of files i.e. images, text, html, video, audio, flash, and objects.</p>*@
+
+                        @*<p class="fw-semibold">Example</p>*@
+                        <input type="file" name="FilesParca" class="file-input" multiple="multiple">
+                    </div>
+                </div>
+            </div>
+            <br />
+        </fieldset>
+
+        <h6>Otobüs Detay</h6>
+        <fieldset>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label">Otobüse Verilen Ücret: <span class="text-danger">*</span></label>
+                        <input type="text" name="OtobüsUcret" placeholder="0000₺" class="form-control required">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" id="asd" hidden>asd</button>@*Submit Butonu Mecbur*@
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[href="#finish"]').click(function () {
+            //var url = window.location.pathname;
+            //var id = url.substring(url.lastIndexOf('/') + 1);
+            //document.getElementById("TaskId").value = id;
+            $('#asd').click();
+        });
+    });
+
+</script>

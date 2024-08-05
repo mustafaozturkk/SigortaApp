@@ -1,0 +1,514 @@
+﻿@model List<SigortaApp.Entity.Dto.TaskDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card" id="cardCss" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            İşler
+            @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == SigortaApp.Entity.Enums.RoleEnum.Admin.ToString())
+            {
+                <button type="button" class="btn btn-info" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#taskModal">İş Ekle <i class="ph-plus-circle ms-2"></i></button>
+
+                <button type="button" class="btn btn-warning" style="float:right;margin-right:5px;" data-bs-toggle="modal" onclick="funcGetTaskOrientations()" data-bs-target="#taskOtogarModal">
+                    Otogara Yönlendir <i class="ph-arrow-fat-lines-right ms-2"></i>
+                </button>
+                <a type="button" href="/Admin/Task/EndTask" class="btn btn-success" style="float:right;margin-right:5px;">
+                    Otobüse Teslim Et <i class="ph-arrow-fat-lines-right ms-2"></i>
+                </a>
+            }
+            else if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == SigortaApp.Entity.Enums.RoleEnum.Kurye.ToString())
+            {
+                <button type="button" class="btn btn-info" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#taskModal">İş Ekle <i class="ph-plus-circle ms-2"></i></button>
+                <button type="button" class="btn btn-warning" style="float:right;margin-right:5px;" data-bs-toggle="modal" onclick="funcGetTaskOrientations()" data-bs-target="#taskOtogarModal">
+                    Otogara Yönlendir <i class="ph-arrow-fat-lines-right ms-2"></i>
+                </button>
+
+            }
+            else if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == SigortaApp.Entity.Enums.RoleEnum.Otogar.ToString())
+            {
+                <a type="button" href="/Admin/Task/EndTask" class="btn btn-success" style="float:right;margin-right:5px;">
+                    Otobüse Teslim Et <i class="ph-arrow-fat-lines-right ms-2"></i>
+                </a>
+            }
+            else if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == SigortaApp.Entity.Enums.RoleEnum.Kullanici.ToString())
+            {
+                <button type="button" class="btn btn-info" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#taskModal">İş Ekle <i class="ph-plus-circle ms-2"></i></button>
+            }
+        </h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered dt-responsive" id="taskTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Sıra</th>
+                    <th>İş No</th>
+                    <th>Alınacak Şirket</th>
+                    <th>Gönderilecek Şirket</th>
+                    <th>Gönderilecek İl</th>
+                    <th>Durum</th>
+                    <th>Otobüs Saati</th>
+                    <th>Alan Kurye</th>
+                    <th>Ödeme Yapacak</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="taskModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni İş</h5>
+                <button type="button" class="btn-close" onclick="funcCloseTaskModal()" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddTask", "Task")">
+                <div class="modal-body" style="background-color: #fbf9f9;">
+                    <div class="form-control">
+                        <input type="text" id="taskid" name="Id" value="0" hidden />
+                        <div class="row">
+                            <label class="col-md-6"><b>Şahıs Gönderimi mi?</b></label>
+                            <div class="col-md-6 form-check form-switch">
+                                <input type="checkbox" name="SahisMi" class="form-control form-check-input" id="isTekilMusteri" onchange="checkboxChange()">
+                            </div>
+                            <input hidden class="form-control" type="checkbox" name="SahisMi" id="isTekilMusteriSwitch" />
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><b>Alınacak Şirket</b></label>
+                                @Html.DropDownList("OrderCompanyId",ViewBag.Companys,"Alınacak Şirketi Seçiniz..",new { @class = "form-control select", @id="orderCompanyId"/*, @onchange="funcClearRows()"*/ })
+                            </div>
+                            <div class="col-md-6 gonderSirket">
+                                <label><b>Gönderilecek Şirket</b></label>
+                                @Html.DropDownList("SendCompanyId",ViewBag.Companys,"Gönderilecek Şirketi Seçiniz..",new { @class = "form-control select", @id="sendCompanyId"/*, @onchange="funcGetTypes()" */})
+                            </div>
+                            <div class="col-md-6 tekilMusteri" style="display:none;">
+                                <label><b>Şahıs Adı Soyadı</b></label>
+                                <input type="text" class="form-control" id="sahisAdSoyad" name="SahisAdSoyad" placeholder="Alıcı Adı Soyadı Giriniz..">
+                            </div>
+                        </div>
+                        <br />
+                        <div class="tekilMusteri2" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label><b>Şahıs Telefon</b></label>
+                                    <input type="text" class="form-control" id="sahisTel" name="SahisTel" placeholder="Alıcı Telefon Giriniz..">
+                                </div>
+                                <div class="col-md-6">
+                                    <label><b>Şahıs Fiyat</b></label>
+                                    <input type="text" class="form-control" id="sahisFiyat" name="SahisFiyat" placeholder="Alıcı Fiyatı Giriniz..">
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><b>Gönderilecek İl</b></label>
+                                @Html.DropDownList("CityIdUst",ViewBag.Citys,"İl Seçiniz..",new { @class = "form-control select", @id="cityId", @onchange="funcGetCityUst()" })
+                            </div>
+                            <div class="col-md-6">
+                                <label><b>Gönderilecek İlçe</b></label>
+                                <select id="cityId_Ust2" class="form-control select" name="CityId">
+                                    <option value="" disabled selected hidden>İlçe Seçiniz..</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        @*<div class="mb-3 row">
+                        <label class="col-form-label col-lg-3">Kurye</b></label>
+                        <div class="col-lg-9">
+                        @Html.DropDownList("Carrier",ViewBag.Carriers,"Kurye Seçiniz..",new { @class = "form-control select", @id="carrierId"/*, @onchange="funcGetTypes()"*/ })
+                        </div>
+                        </div>*@
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><b><b>Otobüs Saati</b></b></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ph-calendar"></i></span>
+                                    @*<input type="text" name="BusDate" class="form-control daterange-single">@*value="DateTime.Now.ToString("DD/MMM/YYYY h:mm A")"*@
+                                    <input class="form-control" id="busDate" type="datetime-local" name="BusDate">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label><b>Alıcı/Gönderici Ödemeli</b></label>
+                                <select data-placeholder="Ödeme Tarafı Seçiniz.." name="CompanyWillPayId" id="simpleSelect2_2" class="form-control select">
+                                    <option value="0" disabled>Seçiniz..</option>
+                                    <option value="1">Alıcı</option>
+                                    <option value="2">Gönderici</option>
+                                    <option value="3">Karşıdan Ödemeli</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <label class="col-md-6"><b>2 kat fiyat ?</b></label>
+                            <div class="col-md-6 form-check form-switch">
+                                <input type="checkbox" name="IkiKatMi" class="form-control form-check-input" id="sc_ls_c">
+                            </div>
+                            <input hidden class="form-control" type="checkbox" name="IkiKatMi" id="check2" />
+                        </div>
+                        <br />
+                        <div class="mb-3 row">
+                            <label><b>Açıklama</b></label>
+                            <div class="col-lg-12">
+                                <input type="text" class="form-control" id="descTask" name="Description" placeholder="Not Ekleyebilirsiniz..">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" onclick="funcCloseTaskModal()" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="taskHistoryModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:lavender">
+            <div class="modal-header">
+                <h5 class="modal-title">İş Detayı</h5>
+                <button type="button" class="btn-close" onclick="funcCloseHistoryModal()" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="background-color: #fbf9f9;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="funcCloseHistoryModal()" data-bs-dismiss="modal">Kapat</button>
+                @*<button type="submit" class="btn btn-primary">Kaydet</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="taskOtogarModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color:lavender">
+            <div class="modal-header">
+                <h5 class="modal-title">Otogara Teslim Edilecekler</h5>
+                <button type="button" class="btn-close" onclick="funcCloseModal()" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="background-color: #fbf9f9;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="funcCloseModal()" data-bs-dismiss="modal">Kapat</button>
+                <button type="submit" onclick="funcOtogarPost()" class="btn btn-primary">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@* Select 2 için eklenti*@
+
+
+<script type="text/javascript">
+
+function checkboxChange(){
+            var aktifMi = $('#isTekilMusteri').prop('checked');
+        
+            if (aktifMi) {
+                $('.gonderSirket')[0].style.display = 'none';
+                $('.tekilMusteri')[0].style.display = 'block';
+                $('.tekilMusteri2')[0].style.display = 'block';
+                document.getElementById("simpleSelect2_2").options[1].disabled = true;
+                document.getElementById("simpleSelect2_2").options[2].disabled = true;
+                $("#simpleSelect2_2").val("3").trigger('change');
+            } else {
+                $('.tekilMusteri')[0].style.display = 'none';
+                $('.tekilMusteri2')[0].style.display = 'none';
+                $('.gonderSirket')[0].style.display = 'block';
+                document.getElementById("simpleSelect2_2").options[1].disabled = false;
+                document.getElementById("simpleSelect2_2").options[2].disabled = false;
+                $("#simpleSelect2_2").val("1").trigger('change');
+            }
+        }
+
+    $(document).ready(function () {
+        
+        
+
+        $("#taskTable").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Admin/Task/GetData",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "visible": false,
+                "searchable": true
+            }],
+            "columns": [
+                { "data": "id", "name": "id", "autoWidth": true },
+                { "data": "id", "name": "id", "autoWidth": true },
+                {
+                    "data": "orderCompany.name", "name": "orderCompany.name", "autoWidth": true
+                },
+                {
+                    "data": "sendCompany.name", "name": "sendCompany.name", "autoWidth": true
+                },
+                { "data": "city.name", "name": "city.name", "autoWidth": true },
+                { "data": "status.name", "name": "status.name", "autoWidth": true, "render": function (data, type, row){
+                    return '<span class="badge bg-success bg-opacity-10 text-success">'+data+'</span>'
+                }},
+                { "data": "busDate", "name": "busDate", "autoWidth": true, "render": DataTable.render.datetime('D/MM/YYYY HH:mm') },
+                { "data": "carrierName", "name": "carrierName", "autoWidth": true },
+                { "data": "aliciMi", "name": "aliciMiS", "autoWidth": true },
+                {
+                    "render": function (data, type, full, meta) {
+                        return '<a href="#" onclick="funcGetTaskHitoryDetails('+full.id+')"><i class="ph-eye"></i></a>&nbsp;&nbsp;<a href="#" onclick="funcGetTaskUpdateModal(' + full.id + ')"><i class="ph-pencil"></i></a>';
+                    }
+                    },
+                    //{
+                    //    data: null,
+                    //    render: function (data, type, row) {
+                    //        return "<a href='#' class='btn btn-danger' onclick=funcDeleteCompany('" + row.id + "'); >Sil</a>";
+                    //    }
+                    //},
+                ]
+
+        });
+
+    });
+
+
+    $("#orderCompanyId").select2({
+        placeholder: "Alınacak Şirketi Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#sendCompanyId").select2({
+        placeholder: "Gönderilecek Şirketi Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#cityId").select2({
+        placeholder: "Gönderilecek İl Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#carrierId").select2({
+        placeholder: "Kurye Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#cityId_Ust2").select2({
+        placeholder: "İlçe Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#simpleSelect2_2").select2({
+        //placeholder: "Ödeme Yapacak Testci..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskModal')
+    });
+
+    $("#sc_ls_c").on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true');
+        } else {
+            $(this).attr('value', 'false');
+        }
+
+        $('check2').text($('#sc_ls_c').val());
+    });
+
+    $("#isTekilMusteri").on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true');
+        } else {
+            $(this).attr('value', 'false');
+        }
+
+        $('isTekilMusteriSwitch').text($('#isTekilMusteri').val());
+    });
+
+
+    function funcGetTaskHitoryDetails(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TaskHistoryDetails")",
+            data: { taskId: id },
+            success: function (response) {
+                $("#taskHistoryModal").find(".modal-body").html(response);
+                $("#taskHistoryModal").modal('show');
+                funcCardCssSet();
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function ClearModal() {
+        document.getElementById("busDate").value = "";
+        document.getElementById("descTask").value = "";
+        document.getElementById("taskid").value = "";
+        //document.getElementById("sc_li_c").checked = "";
+        $("#orderCompanyId").val("").trigger('change');
+        $("#sendCompanyId").val("").trigger('change');
+        $("#CompanyWillPayId").val("").trigger('change');
+        $("#cityId_Ust2").val("").trigger('change');
+        $("#cityId").val("").trigger('change');
+    }
+
+    function funcGetTaskUpdateModal(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetTaskById")",
+            data: { taskId: id },
+            success: function (response) {
+                funcCardCssSet();
+                $("#taskModal").modal('show');
+                $("#orderCompanyId").val(response.orderCompanyId).trigger('change');
+                $("#sendCompanyId").val(response.sendCompanyId).trigger('change');
+                $("#CompanyWillPayId").val(response.companyWillPayId).trigger('change');
+                if(response.cityUstId == 0){
+                    $("#cityId").val(response.cityId).trigger('change');
+                }else{
+                    $("#cityId").val(response.cityUstId).trigger('change');
+                    $("#cityId_Ust2").val(response.cityUstId).trigger('change');
+                }
+                document.getElementById("taskid").value = response.id;
+                document.getElementById("busDate").value = response.busDate;
+                document.getElementById("descTask").value = response.description;
+                //document.getElementById("sc_li_c").checked = response.isActive;
+                //$("#cariGrup").val(response.currentGroupId).trigger('change');
+                //$("#personelId").val(response.personId).trigger('change');
+                
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+    function funcGetTaskOrientations() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TaskOrientations")",
+            success: function (response) {
+                $("#taskOtogarModal").find(".modal-body").html(response);
+                $("#taskOtogarModal").modal('show');
+                funcCardCssSet();
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCloseHistoryModal() {
+        $("#taskHistoryModal").modal('hide');
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+
+    function funcCloseTaskModal() {
+        $("#taskModal").modal('hide');
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+
+    function funcCardCssSet() {
+        ClearModal();
+        document.getElementById("cardCss").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss").style.opacity = 1;
+    }
+
+    function funcOtogarPost() {
+        var checkboxes = document.querySelectorAll('input[name="tasksotogar"]:checked'), values = [];
+
+        Array.prototype.forEach.call(checkboxes, function (el) {
+            values.push(el.value);
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("TaskOrientationsUpdate")",
+            data: { tasks: values },
+            success: function () {
+                $("#taskOtogarModal").modal('hide');
+                funcCardCssSetClear();
+
+            },
+            error: function (req, status, error) {
+                console.log("");
+            }
+        });
+    }
+
+    function funcGetCityUst(e) {
+        var cityid = document.getElementById("cityId").value;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("CityUstByCity")",
+            data: { cityId: cityid },
+            dataType: "JSON",
+            success: function (msg) {
+                $('#cityId_Ust2 option').remove();
+                for (var i = 0; i < msg.length; i++) {
+                    var ddl = document.getElementById("cityId_Ust2");
+                    var option = document.createElement("OPTION");
+                    option.innerHTML = msg[i].text;
+                    option.value = msg[i].value;
+                    ddl.options.add(option);
+                }
+
+            },
+            error: function (req, status, error) {
+                console.log(msg);
+            }
+        });
+    }
+
+</script>
+
+<style>
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .page-content {
+        z-index: 1;
+    }
+
+
+</style>

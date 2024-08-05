@@ -1,0 +1,103 @@
+﻿@using SigortaApp.Entity.Concrete
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<Types>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Model Listesi</h1>
+<br />
+<table class="table table-bordered">
+    <tr>
+        <th>#</th>
+        <th>Kategori</th>
+        <th>Marka</th>
+        <th>Model</th>
+        <th>Düzenle</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <th>@item.Id</th>
+            <td>@item.Category.Name</td>
+            <td>@item.Brand.Name</td>
+            <td>@item.Name</td>
+            <td>
+                <a href="/Admin/Types/DeleteType/@item.Id" id="DeleteBtn" onclick="return confirm('Silmek istediğinize emin misiniz?');" class="btn btn-danger">Sil</a>
+                <a href="#" class="btn btn-outline-warning" onclick="funcUpdateTypes(@item.Id)">Güncelle</a>
+            </td>
+        </tr>
+    }
+</table>
+<button type="button" class="btn btn-primary" data-toggle="modal" onclick="funcModalRefresh()" data-target="#myModal5">
+    Yeni Model
+</button>
+<br />
+<br />
+@Html.PagedListPager((IPagedList)Model,page=>Url.Action("Index", new { page}))
+
+<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Model Ekle</h4>
+            </div>
+            <form method="post" action="@Url.Action("AddTypes", "Types")">
+                <div class="modal-body">
+                    <input type="text" id="typesid" name="Id" value="0" hidden />
+                    <div class="form-control">
+                        <label>Kategori Adı</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @Html.DropDownList("CategoryId",ViewBag.cv,"Kategori Seçiniz..",new { @class = "form-control", @id="categoryId" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Marka Adı</label>
+                        @*<input type="text" name="Name" class="form-control" />*@
+                        @Html.DropDownList("BrandId",ViewBag.bv,"Marka Seçiniz..",new { @class = "form-control", @id="brandId" })
+                    </div>
+                    <br />
+                    <div class="form-control">
+                        <label>Model Adı</label>
+                        <input type="text" id="typeid" name="Name" class="form-control" />
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Vazgeç</button>
+                    <input type="submit" class="btn btn-primary" value="Kaydet" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function funcModalRefresh() {
+        document.getElementById("typesid").value = "";
+        document.getElementById("brandId").value = "";
+        document.getElementById("typeid").value = "";
+    }
+
+    function funcUpdateTypes(id) {
+        $.ajax({
+            url: '/Admin/Types/UpdateType/' + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function (results2) {
+                $("#myModal5").modal();
+                funcModalRefresh();
+                document.getElementById("typesid").value = results2.id;
+                document.getElementById("categoryId").value = results2.categoryId;
+                document.getElementById("brandId").value = results2.brandId;
+                document.getElementById("typeid").value = results2.name;
+            }
+        });
+    }
+</script>

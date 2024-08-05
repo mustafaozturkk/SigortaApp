@@ -1,0 +1,565 @@
+﻿@model SigortaApp.Entity.Dto.TaskDto
+
+@*<style>
+    body{
+  padding-bottom:20px;
+}
+.nav-link.active{
+   max-height:500px;
+  margin-bottom:0px;
+}
+.nav-link{
+  max-height:0px;
+  margin-bottom:50px;
+}
+.filler {
+  background: cyan;
+  height: 600px;
+}
+
+.nav-pills .nav-link .tab_subtitle_hide {
+  font-size: 16px !important;
+  visibility: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.nav-pills .nav-link.active .tab_subtitle_hide {
+  color: #fff;
+  visibility: visible;
+  max-height: 600px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+</style>*@
+
+@* Select 2 için eklenti*@
+<script src="~/LimitlessTheme/js/vendor/forms/selects/select2.min.js"></script>
+
+<script src="~/LimitlessTheme/js/vendor/media/glightbox.min.js"></script>
+<script src="~/LimitlessTheme/demo/pages/gallery.js"></script>
+
+
+<div class="col-md-12">
+    <div class="col-md-3" style="float:left;padding-right:15px;">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-for-teams-tab" data-toggle="pill" href="#v-pills-for-teams" role="tab"
+               aria-controls="v-pills-for-teams" aria-selected="false">
+                <i class="tab_i fad fa-users-class"></i>
+                <div class="tab_content">
+                    İş Geçmişi
+                    <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                </div>
+                @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+            </a>
+            @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Admin" || (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Kurye" && Model.Carrier == Convert.ToInt32(User.Claims.Where(w => w.Type.Contains("nameidentifier")).First().Value)))
+            {
+                <a class="nav-link" id="v-pills-for-small-business-tab" data-toggle="pill" href="#v-pills-for-small-business"
+                   role="tab" aria-controls="v-pills-for-small-business" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        Beklemeye Al
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+                <a class="nav-link" id="v-pills-for-small-business3-tab" data-toggle="pill" href="#v-pills-for-small-business3"
+                   role="tab" aria-controls="v-pills-for-small-business3" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        Teslim Al
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+                <a class="nav-link" id="v-pills-for-small-business7-tab" data-toggle="pill" href="#v-pills-for-small-business7"
+                   role="tab" aria-controls="v-pills-for-small-business7" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        İşi Geri Yönlendir
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+            }
+
+            @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Admin" || User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Kurye" && Model.Carrier == null)
+            {
+                <a class="nav-link" id="v-pills-for-small-business6-tab" data-toggle="pill" href="#v-pills-for-small-business6"
+                   role="tab" aria-controls="v-pills-for-small-business6" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        İşi Üzerine Al
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+            }
+
+            @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Admin")
+            {
+                <a class="nav-link" id="v-pills-for-enterprise-tab" data-toggle="pill" href="#v-pills-for-enterprise"
+                   role="tab" aria-controls="v-pills-for-enterprise" aria-selected="true">
+                    <div class="tab_content">@*<i class="tab_i fad fa-building"></i>*@<span class="multi-company">İşi Sonlandır</span><br></div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+
+
+                <a class="nav-link" id="v-pills-for-small-business2-tab" data-toggle="pill" href="#v-pills-for-small-business2"
+                   role="tab" aria-controls="v-pills-for-small-business2" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        Ekibe Ata
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+                @if (Model.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.TeslimAlindi)
+                {
+                    <a class="nav-link" id="v-pills-for-small-business4-tab" data-toggle="pill" href="#v-pills-for-small-business4"
+                       role="tab" aria-controls="v-pills-for-small-business4" aria-selected="false">
+                        <i class="tab_i fad fa-store"></i>
+                        <div class="tab_content">
+                            Ödeme Yapıldı mı ?
+                            <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                        </div>
+                        @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                    </a>
+                }
+
+                <a class="nav-link" id="v-pills-for-small-business5-tab" data-toggle="pill" href="#v-pills-for-small-business5"
+                   role="tab" aria-controls="v-pills-for-small-business5" aria-selected="false">
+                    <i class="tab_i fad fa-store"></i>
+                    <div class="tab_content">
+                        Resimler
+                        <!--<br><div class="tab_subtitle_hide">Similar to a hierarchical organization, Dummy text allows you to structure users.</div>-->
+                    </div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+            }
+
+            @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Otogar" && Model.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.OtogaraYonlendirildi)
+            {
+                <a class="nav-link" id="v-pills-for-enterprise-tab" data-toggle="pill" href="#v-pills-for-enterprise"
+                   role="tab" aria-controls="v-pills-for-enterprise" aria-selected="true">
+                    <div class="tab_content">@*<i class="tab_i fad fa-building"></i>*@<span class="multi-company">İşi Sonlandır</span><br></div>
+                    @*<div class="tab_subtitle_hide">
+                Similar to a hierarchical organization, Dummy text allows you to structure
+                users.
+                </div>*@
+                </a>
+            }
+        </div>
+    </div>
+    <div class="col-md-9" style="float:right;">
+        <div class="tab-content" id="v-pills-tabContent">
+            <div class="tab-pane active show" id="v-pills-for-teams" role="tabpanel" aria-labelledby="v-pills-for-teams-tab">
+                <!--Inicio sub-tab1-->
+                <div class="col-md-6 form-control">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label style="font-weight:bold;">Göderilen Şirket:</label><a>@Model.SendCompany.Name</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <label style="font-weight:bolder;">Alınacak Şirket:</label><a>@Model.OrderCompany.Name</a>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label style="font-weight:bolder;">Gönderilecek İl:</label><a>@Model.City.Name</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <label style="font-weight:bolder;">Otobüs Saati:</label><a>@Model.BusDate.ToShortTimeString()</a>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label style="font-weight:bolder;">Kurye:</label><a>@Model.CarrierName</a>
+                        </div>
+                        <div class="col-lg-6">
+                            @if (Model.CompanyWillPayId == Model.OrderCompanyId)
+                            {
+                                <label style="font-weight:bolder;">Ödeme Yapacak:</label><a>Gönderici</a>
+                            }
+                            else
+                            {
+                                <label style="font-weight:bolder;">Ödeme Yapacak:</label><a>Alıcı</a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+                @*@if (Model.PaymentTasks.Count > 0)
+                {
+                    <div class="form-control">
+                        <div class="row">
+                            <center style="font-weight:bold;"><p>Ödeme Durumu</p></center>
+                        </div>
+                        @foreach (var item in Model.PaymentTasks.OrderByDescending(t => t.CreatedDate))
+                        {
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label style="font-weight:bold;">Ödeme Yapan Şirket:</label><a>@item.Company.Name</a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label style="font-weight:bolder;">Cari/Nakit:</label>
+                                    @if (item.CariMi == true)
+                                    {
+                                        <a>Cari</a>
+                                    }
+                                    else
+                                    {
+                                        <a>Nakit</a>
+                                    }
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label style="font-weight:bolder;">Ödenecek Tutar:</label><a>@item.Price₺</a>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label style="font-weight:bolder;">Ödeme Durumu:</label>
+                                    @if (item.PaymentReceived == true)
+                                    {
+                                        <a style="color:green;">Ödendi</a>
+                                    }
+                                    else
+                                    {
+                                        <a style="color:red;">Ödenmedi</a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <br />
+                }*@
+
+                <div class="form-control">
+                    <div class="row">
+                        <center style="font-weight:bold;"><p>İş Geçmişi</p></center>
+                    </div>
+                    <div class="row">
+                        @foreach (var item in Model.TaskHistorys.OrderByDescending(t => t.CreatedDate))
+                        {
+                            <div class="bg-light border-start border-start-width-3 border-start-primary rounded-end p-1">
+                                <blockquote class="blockquote d-flex mb-0">
+                                    <div class="me-3">
+                                        <img class="rounded-circle" src="~/LimitlessTheme/images/demo/users/face1.jpg" width="46" height="46" alt="">
+                                    </div>
+
+                                    <div>
+                                        <footer class="blockquote-footer mb-0"> @item.CreatedDate.ToString("dd/MM/yyyy HH:mm")</footer>
+                                        @if (item.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.BeklemeyeAlindi)
+                                        {
+                                            <p>@item.Status.Name.</p> <p style="font-size:smaller;">(@item.PutOnHoldDate.Value tarihinde alınacak.)</p>
+                                            if (item.Description != "" || item.Description != null)
+                                            {
+                                                <p style="font-size:smaller;"><b>Not:</b> (@item.Description)</p>
+                                            }
+                                        }
+                                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.EkibeAtandi)
+                                        {
+                                            <p>@item.Status.Name. </p>
+
+                                            <p style="font-size:smaller;">(@item.CarrierName işi üzerine aldı.)</p>
+                                        }
+                                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.KuryeGeriYonlendirdi)
+                                        {
+                                            <p>@item.Status.Name. </p>
+
+                                            <p style="font-size:smaller;"><b>Not:</b> (@item.Description)</p>
+                                        }
+                                        else if (item.StatusId == (int)SigortaApp.Entity.Enums.StatusEnum.Duzenlendi)
+                                        {
+                                            <p>@item.Status.Name. </p>
+                                            <p style="font-size:smaller;"><b>Not:</b> (@item.Description)</p>
+                                        }
+                                        else
+                                        {
+                                            <p>@item.Status.Name.</p>
+                                        }
+                                    </div>
+                                </blockquote>
+                            </div>
+                            <hr />
+
+                        }
+                    </div>
+                </div>
+                <!--Fim sub-tab1-->
+            </div>
+
+            <div class="tab-pane" id="v-pills-for-small-business" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business-tab">
+                <div style="text-align:center;">
+                    <form asp-controller="Task" asp-action="PutOnHold" method="post">
+                        <input type="text" asp-for="Id" value="@Model.Id" hidden />
+                        <label>Beklemeye Almak istediğinizden emin misiniz ? </label>
+                        <br />
+                        <br />
+                        <input class="form-control" asp-for="CreatedDate" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                        <br />
+                        <br />
+                        <input type="text" class="form-control" value="" placeholder="Not ekleyebilirsiniz.." asp-for="Description" />
+                        <br />
+                        <br />
+                        <input type="submit" value="Beklemeye Al" class="btn btn-primary" />
+                        @*<a href="#" onclick="funcSetPutOnHold(@Model.Id)" class="btn btn-warning">Beklemeye Al</a>*@
+                    </form>
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane" id="v-pills-for-small-business3" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business3-tab">
+                <div style="text-align:center;">
+                    <form asp-controller="Task" asp-action="Received" method="post">
+                        <input type="text" asp-for="Id" value="@Model.Id" hidden />
+                        <label>Teslim Almak istediğinizden emin misiniz ? </label>
+                        <br />
+                        <br />
+                        <div class="col-lg-12">
+                            <select data-placeholder="Cari/Nakit Seçiniz.." asp-for="CariMi" id="test2Simple" class="form-control select">
+                                <option value="0" disabled>Seçiniz..</option>
+                                <option value="true">Vade</option>
+                                <option value="false">Nakit</option>
+                            </select>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">₺</span>
+                            </div>
+                            <input class="form-control" type="text" asp-for="Price" asp-format="{0:#,###.00}" />
+                        </div>
+                        <br />
+                        <br />
+                        <input type="submit" value="Teslim Al" class="btn btn-primary" />
+                    </form>
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane" id="v-pills-for-enterprise" role="tabpanel"
+                 aria-labelledby="v-pills-for-enterprise-tab">
+                <div style="text-align:center;">
+                    <label>İşi Sonlandırmak istediğinizden emin misiniz ? </label>
+                    <br />
+                    <br />
+                    <a href="/Admin/Task/EndTask/@Model.Id" @*onclick="funcEndTask(@Model.Id)"*@ class="btn btn-success">İşi Kapat</a>
+                </div>
+            </div>
+
+
+            <div class="tab-pane" id="v-pills-for-small-business2" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business2-tab">
+                <div style="text-align:center;">
+                    <br />
+                    <br />
+                    <div class="mb-3 row">
+                        <div class="col-lg-12">
+                            @Html.DropDownList("Carrier",ViewBag.Carriers,null,new { @class = "form-control select", @id="testSimple" })
+                        </div>
+                    </div>
+                    <a href="#" onclick="funcSetCarrierAssign(@Model.Id)" class="btn btn-warning">Ekibe Ata</a>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="v-pills-for-small-business4" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business4-tab">
+                <div style="text-align:center;">
+                    <form asp-controller="PaymentTask" asp-action="GetPaid" method="post">
+                        <input type="text" asp-for="Id" value="@Model.Id" hidden />
+                        <label>Ödeme Yapıldığından Emin misiniz ? </label>
+                        <br />
+                        <br />
+                        <input type="submit" value="Ödeme Alındı" class="btn btn-success" />
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="v-pills-for-small-business5" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business5-tab">
+                <div style="text-align:center;">
+                    @*<p>Resimler parça</p>
+                    <div class="mb-3">
+                    <h6 class="mb-0">Image grid</h6>
+                    <span class="text-muted">Image grid with 4 - 2 - 1 columns</span>
+                    </div>*@
+                    <h3>@Model.files.Count Resim Eklendi</h3>
+                    <div class="row">
+                        @foreach (var item in Model.files)
+                        {
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card">
+                                    <div class="card-img-actions m-1">
+                                        @{
+                                            var base64 = Convert.ToBase64String(item.DataFiles);
+                                            var Image = String.Format("data:image/png;base64,{0}", base64);
+                                        }
+                                        <img class="card-img img-fluid" src="@Image" alt="">
+                                        <div class="card-img-actions-overlay card-img">
+                                            <a href="#" class="btn btn-outline-white btn-icon rounded-pill" data-bs-popup="lightbox" data-gallery="gallery1">
+                                                <i class="ph-plus"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-outline-white btn-icon rounded-pill ms-2">
+                                                <i class="ph-link"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="v-pills-for-small-business6" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business6-tab">
+                <div style="text-align:center;">
+                    <form asp-controller="Task" asp-action="TakeTheTask" method="post">
+                        <input type="text" asp-for="Id" value="@Model.Id" hidden />
+                        <label>Üzerine Almak İstediğinden Emin Misin ? </label>
+                        <br />
+                        <br />
+                        <input type="submit" value="İşi Al" class="btn btn-success" />
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="v-pills-for-small-business7" role="tabpanel"
+                 aria-labelledby="v-pills-for-small-business7-tab">
+                <div style="text-align:center;">
+                    <form asp-controller="Task" asp-action="CarrierRedirectWork" method="post">
+                        <input type="text" asp-for="Id" value="@Model.Id" hidden />
+                        <label>İşi Geri Yönlendirmek istediğinizden emin misiniz ? </label>
+                        <br />
+                        <br />
+                        <input type="text" class="form-control" value="" placeholder="Not ekleyebilirsiniz.." asp-for="Description" />
+                        <br />
+                        <br />
+                        <input type="submit" value="İşi Geri Yönlendir" class="btn btn-primary" />
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@* Select 2 için eklenti*@
+<script src="~/limitlesstheme/js/newbootstrap/bootstrap.min.js"></script>
+
+
+
+<script type="text/javascript">
+
+    @* Select 2 için eklenti*@
+
+        $("#testSimple").select2({
+            placeholder: "Bir Ekip Seçiniz..",
+            theme: "bootstrap4",
+            allowClear: true,
+            dropdownParent: $('#taskHistoryModal')
+        });
+    $("#test2Simple").select2({
+        placeholder: "Bir Ekip Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#taskHistoryModal')
+    });
+
+    function funcSetPutOnHold(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PutOnHold")",
+            data: { taskId: id },
+            success: function (response) {
+                //$("#taskHistoryModal").find(".modal-body").html(response);
+                //$("#taskHistoryModal").modal('show');
+                $("#taskHistoryModal").modal('hide');
+                funcGetTaskHitoryDetails(id);
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcSetCarrierAssign(id) {
+        var newPerson = $('#testSimple :selected').val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("CarrierAssign")",
+            data: { taskId: id, personId: newPerson },
+            success: function (response) {
+                //$("#taskHistoryModal").find(".modal-body").html(response);
+                //$("#taskHistoryModal").modal('show');
+                $("#taskHistoryModal").modal('hide');
+                funcGetTaskHitoryDetails(id);
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcEndTask(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("EndTask")",
+            data: { taskId: id },
+            success: function (response) {
+                //$("#taskHistoryModal").find(".modal-body").html(response);
+                //$("#taskHistoryModal").modal('show');
+                $("#taskHistoryModal").modal('hide');
+                funcGetTaskHitoryDetails(id);
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+</script>

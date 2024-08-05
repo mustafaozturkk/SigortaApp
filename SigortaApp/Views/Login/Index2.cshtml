@@ -1,0 +1,231 @@
+﻿@using SigortaApp.Web.Models
+@model UserSignInViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = null;
+}
+@*<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Takım Yıldızı | Giriş Yap</title>
+
+    <link href="~/inspinia-gh-pages/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/inspinia-gh-pages/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="~/inspinia-gh-pages/css/animate.css" rel="stylesheet">
+    <link href="~/inspinia-gh-pages/css/style.css" rel="stylesheet">
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</head>
+
+<body class="gray-bg">
+    @await Component.InvokeAsync("Notyf")
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <img src="~/csb_logo.png" />
+
+            </div>
+            <br />
+            <form class="m-t" role="form" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="exampleInputEmail1" asp-for="@Model.UserName" aria-describedby="emailHelp" placeholder="Kullanıcı Adı" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" asp-for="@Model.Password" id="exampleInputPassword1" placeholder="Şifre" required="">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Giriş Yap</button>
+
+                <a class="btn btn-sm btn-white btn-block" href="/RegisterUser/Index/">Yeni Hesap Oluştur</a>
+            </form>
+            <p class="m-t"> <small>Donanım Takip Otomasyonu by Öztürk | Tüm Hakları Saklıdır &copy; 2022</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="~/inspinia-gh-pages/js/jquery-3.1.1.min.js"></script>
+    <script src="~/inspinia-gh-pages/js/popper.min.js"></script>
+    <script src="~/inspinia-gh-pages/js/bootstrap.js"></script>
+
+</body>
+
+</html>*@
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Takım Yıldızı | Giriş Yap</title>
+
+	<!-- Global stylesheets -->
+	<link href="~/LimitlessTheme/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+	<link href="~/LimitlessTheme/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+	<link href="~/LimitlessTheme/assets/css/ltr/all.min.css" id="stylesheet" rel="stylesheet" type="text/css">
+	<!-- /global stylesheets -->
+	<!-- Core JS files -->
+	<script src="~/LimitlessTheme/demo/demo_configurator.js"></script>
+	<script src="~/LimitlessTheme/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<!-- /core JS files -->
+	<!-- Theme JS files -->
+	<script src="~/LimitlessTheme/assets/js/app.js"></script>
+	<!-- /theme JS files -->
+
+</head>
+
+<body>
+	@await Component.InvokeAsync("Notyf")
+	<!-- Main navbar -->
+	<div class="navbar navbar-dark navbar-static py-2">
+		<div class="container-fluid">
+			<div class="navbar-brand">
+				<a href="index.html" class="d-inline-flex align-items-center">
+					<img src="~/LimitlessTheme/images/Logo/TakimYildizi2.jpg" alt="">&nbsp;&nbsp;
+					<h3 style="color: white;margin-bottom:0px;">TAKIM YILDIZI</h3>
+				</a>
+			</div>
+
+			<div class="d-flex justify-content-end align-items-center ms-auto">
+				<ul class="navbar-nav flex-row">
+					@*<li class="nav-item">
+						<a href="#" class="navbar-nav-link navbar-nav-link-icon rounded ms-1">
+							<div class="d-flex align-items-center mx-md-1">
+								<i class="ph-lifebuoy"></i>
+								<span class="d-none d-md-inline-block ms-2">Support</span>
+							</div>
+						</a>
+					</li>*@
+					<li class="nav-item">
+						<a href="/RegisterUser/Index/" class="navbar-nav-link navbar-nav-link-icon rounded ms-1">
+							<div class="d-flex align-items-center mx-md-1">
+								<i class="ph-user-circle-plus"></i>
+								<span class="d-none d-md-inline-block ms-2">Kayıt Ol</span>
+							</div>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="/Login/Index2/" class="navbar-nav-link navbar-nav-link-icon rounded ms-1">
+							<div class="d-flex align-items-center mx-md-1">
+								<i class="ph-user-circle"></i>
+								<span class="d-none d-md-inline-block ms-2">Giriş</span>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- /main navbar -->
+	<!-- Page content -->
+	<div class="page-content">
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Inner content -->
+			<div class="content-inner">
+
+				<!-- Content area -->
+				<div class="content d-flex justify-content-center align-items-center">
+
+					<!-- Login form -->
+					<form class="login-form" role="form" method="post">
+						<div class="card mb-0">
+							<div class="card-body">
+								<div class="text-center mb-3">
+									<div class="d-inline-flex align-items-center justify-content-center mb-4 mt-2">
+										<img src="~/LimitlessTheme/images/Logo/takimYildizi.jpg" class="" style="width:250px;" alt="">
+									</div>
+									<h5 class="mb-0">Hesabınıza Giriş Yapın</h5>
+									<span class="d-block text-muted">Kimlik Bilgilerinizi Aşağıya Girin</span>
+								</div>
+
+								<div class="mb-3">
+									<label class="form-label">Kullanıcı Adı</label>
+									<div class="form-control-feedback form-control-feedback-start">
+										<input type="text" class="form-control" id="exampleInputEmail1" asp-for="@Model.UserName" aria-describedby="emailHelp" placeholder="Kullanıcı Adı" required="">
+										<div class="form-control-feedback-icon">
+											<i class="ph-user-circle text-muted"></i>
+										</div>
+									</div>
+								</div>
+
+								<div class="mb-3">
+									<label class="form-label">Şifre</label>
+									<div class="form-control-feedback form-control-feedback-start">
+										<input type="password" class="form-control" asp-for="@Model.Password" id="exampleInputPassword1" placeholder="************" required="">
+										<div class="form-control-feedback-icon">
+											<i class="ph-lock text-muted"></i>
+										</div>
+									</div>
+								</div>
+
+								<div class="d-flex align-items-center mb-3">
+									<label class="form-check">
+										<input type="checkbox" name="remember" class="form-check-input" checked>
+										<span class="form-check-label">Beni Hatırla</span>
+									</label>
+
+									<a href="/RegisterUser/PasswordReset/" class="ms-auto">Şifrenizi mi Unuttunuz?</a>
+								</div>
+
+								<div class="mb-3">
+									<button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+								</div>
+
+								@*<div class="text-center text-muted content-divider mb-3">
+									<span class="px-2">or sign in with</span>
+								</div>
+
+								<div class="text-center mb-3">
+									<button type="button" class="btn btn-outline-primary btn-icon rounded-pill border-width-2"><i class="ph-facebook-logo"></i></button>
+									<button type="button" class="btn btn-outline-pink btn-icon rounded-pill border-width-2 ms-2"><i class="ph-dribbble-logo"></i></button>
+									<button type="button" class="btn btn-outline-secondary btn-icon rounded-pill border-width-2 ms-2"><i class="ph-github-logo"></i></button>
+									<button type="button" class="btn btn-outline-info btn-icon rounded-pill border-width-2 ms-2"><i class="ph-twitter-logo"></i></button>
+								</div>*@
+
+								<div class="text-center text-muted content-divider mb-3">
+									<span class="px-2">Hesabınız Yok Mu ?</span>
+								</div>
+
+								<div class="mb-3">
+									<a href="/RegisterUser/Index/" class="btn btn-light w-100">Kayıt Ol</a>
+								</div>
+
+								<span class="form-text text-center text-muted">Devam ederek <a href="#">Şartlarımızı &amp; Koşullarımızı</a> ve <a href="#">Çerez Politikamızı</a> Okuduğunuzu Onaylıyorsunuz.</span>
+							</div>
+						</div>
+					</form>
+					<!-- /login form -->
+
+				</div>
+				<!-- /content area -->
+				<!-- Footer -->
+				<div class="navbar navbar-sm navbar-footer border-top">
+					<div class="container-fluid">
+						<span style="margin:auto;"><b>Copyright &copy; 2023 Takım Yıldızı. Tüm hakları saklıdır.</b></span>
+					</div>
+				</div>
+				<!-- /footer -->
+
+			</div>
+			<!-- /inner content -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<!-- /page content -->
+
+</body>
+</html>

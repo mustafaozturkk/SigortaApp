@@ -1,0 +1,311 @@
+﻿@model List<SigortaApp.Entity.Concrete.Company>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="card" id="cardCss2" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            Şirketler
+            <button type="button" class="btn btn-light" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#companyModal">Şirket Ekle <i class="ph-plus-circle ms-2"></i></button>
+        </h5>
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered dt-responsive" id="companyTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Şirket No</th>
+                    <th>Adı</th>
+                    <th>Adres</th>
+                    <th>Durumu</th>
+                    <th>Oluşturulduğu Tarih</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            @*<tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+            <td>#@item.Id</td>
+            <td><a href="/Admin/Company/GetCompanyDetails/@item.Id">@item.Name</a></td>
+            <td><a href="@item.Adress">Gitmek için tıklayın</a></td>
+            <td>
+            @{
+            if (item.IsActive)
+            {
+            <p>Aktif</p>
+            }
+            else
+            {
+            <p>Pasif</p>
+            }
+            }
+            </td>
+            <td>@item.CreatedDate.ToString("dd-MM-yyyy hh:mm")</td>
+            <td class="text-center">
+            <div class="d-inline-flex">
+            <a href="/Admin/Company/GetCompanyDetails/@item.Id"><i class="ph-eye"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="funcGetCompany(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="funcDeleteCompany(@item.Id)" id="sweet_combine"><i class="ph-trash"></i></a>&nbsp;&nbsp;&nbsp;
+            <a type="button" href="/Admin/Company/DownloadPDFFile/@item.Id" id="btnGenerate" target="_blank" class="btn btn-light"><i class="ph-file-arrow-down me-2"></i> Rapor</a>
+            </div>
+            </td>
+            </tr>
+            }
+            </tbody>*@
+        </table>
+    </div>
+</div>
+
+<div id="companyModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Şirket</h5>
+                <button type="button" class="btn-close" onclick="funcCardCssSetClear()" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddCompany", "Company")">
+                <div class="modal-body" style="background-color: #fbf9f9;">
+                    <div class="form-control">
+                        <input type="text" id="companyid" name="Id" value="0" hidden />
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Şirket Adı</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyName" name="Name" placeholder="Şirket Adı Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Cari Grup</label>
+                            <div class="col-lg-9">
+                                @Html.DropDownList("CurrentGroupId",ViewBag.carigrup,"Cari Grup Seçiniz..",new { @class = "form-control", @id="cariGrup", @onchange="funcShowPerson()" })
+                            </div>
+                        </div>
+                        <div class="mb-3 row" style="display:none;" id="personelDiv">
+                            <label class="col-form-label col-lg-3">Personel</label>
+                            <div class="col-lg-9">
+                                @Html.DropDownList("PersonId",ViewBag.userval,"Personel Seçiniz..",new { @class = "form-control", @id="personelId" })
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Adres</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyAdress" name="Adress" placeholder="Adres Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Email</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyEmail" name="Email" placeholder="Email Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Cep Telefonu</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyMobilePhone" name="MobilePhone" placeholder="Cep Telefonu Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Telefon</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyPhone" name="Phone" placeholder="Telefon Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Fax</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyTaxNumber" name="TaxNumber" placeholder="Fax Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Başlık</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="companyTitle" name="Title" placeholder="Başlık Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="form-check-label col-lg-3" for="sc_li_c">Aktif Mi</label>
+                            <div class="col-lg-9">
+                                <div class="form-check form-check-inline form-switch">
+                                    <input type="checkbox" name="IsActive" checked value="true" class="form-check-input form-check-input-success" id="sc_li_c">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" onclick="funcCardCssSetClear()" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#companyTable").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Admin/Company/GetData",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "visible": false,
+                "searchable": false
+            }],
+            "columns": [
+                { "data": "id", "name": "id", "autoWidth": true },
+                {
+                    "data": "name", "name": "name", "autoWidth": true, "render": function (data, type, row) {
+                        return '<a href="/Admin/Company/GetCompanyDetails/' + row.id + '">' + data + '</a>';
+                    }
+                },
+                { "data": "adress", "name": "adress", "autoWidth": true },
+                {
+                    "data": "isActive", "name": "isActive", "autoWidth": true, "render": function (data, type, row) {
+                        return (data == true) ? '<span class="">Aktif</span>'
+                            : '<span class="">Pasif</span > ';
+                    }
+                },
+                { "data": "createdDate", "name": "createdDate", "autoWidth": true, "render": DataTable.render.datetime('D/MM/YYYY') },
+                {
+                    "render": function (data, type, full, meta) {
+                        return '<a href="/Admin/Company/GetCompanyDetails/' + full.id + '"><i class="ph-eye"></i></a>&nbsp;&nbsp;<a href="#" onclick="funcGetCompany(' + full.id + ')"><i class="ph-pencil"></i></a>&nbsp;&nbsp;<a href="#" onclick=funcDeleteCompany("' + full.id + '");><i class="ph-trash"></i></a>&nbsp;<a href="/Admin/Company/GetCompanyRapor/' + full.id + '" target="_blank"><i class="ph-file-arrow-down me-2"></i></a>';
+                    }
+                    },
+                    //{
+                    //    data: null,
+                    //    render: function (data, type, row) {
+                    //        return "<a href='#' class='btn btn-danger' onclick=funcDeleteCompany('" + row.id + "'); >Sil</a>";
+                    //    }
+                    //},
+                ]
+
+        });
+    });
+
+    function funcShowPerson() {
+        var selected = $('#cariGrup :selected').val();
+        if (selected == '11') {
+            document.getElementById('personelDiv').style.display = "";
+        } else {
+            document.getElementById('personelDiv').style.display = "none";
+        }
+    }
+
+    $("#cariGrup").select2({
+        placeholder: "Cari Grup Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#companyModal')
+    });
+
+    $("#personelId").select2({
+        placeholder: "Personel Seçiniz..",
+        theme: "bootstrap4",
+        allowClear: true,
+        dropdownParent: $('#companyModal')
+    });
+
+    function ClearModal() {
+        document.getElementById("companyid").value = "";
+        document.getElementById("companyName").value = "";
+        document.getElementById("companyAdress").value = "";
+        document.getElementById("companyEmail").value = "";
+        document.getElementById("companyMobilePhone").value = "";
+        document.getElementById("companyPhone").value = "";
+        document.getElementById("companyTaxNumber").value = "";
+        document.getElementById("companyTitle").value = "";
+        document.getElementById("sc_li_c").checked = "";
+        $("#cariGrup").val("").trigger('change');
+        $("#personelId").val("").trigger('change');
+    }
+
+    function funcGetCompany(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCompany")",
+            data: { companyId: id },
+            success: function (response) {
+                ClearModal();
+                $("#companyModal").modal('show');
+                document.getElementById("companyid").value = response.id;
+                document.getElementById("companyName").value = response.name;
+                document.getElementById("companyAdress").value = response.adress;
+                document.getElementById("companyEmail").value = response.email;
+                document.getElementById("companyMobilePhone").value = response.mobilePhone;
+                document.getElementById("companyPhone").value = response.phone;
+                document.getElementById("companyTaxNumber").value = response.taxNumber;
+                document.getElementById("companyTitle").value = response.title;
+                document.getElementById("sc_li_c").checked = response.isActive;
+                $("#cariGrup").val(response.currentGroupId).trigger('change');
+                $("#personelId").val(response.personId).trigger('change');
+                document.getElementById("cardCss2").style.opacity = 0.35;
+                //$("#taskHistoryModal").find(".modal-body").html(response);
+                //$("#taskHistoryModal").modal('show');
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcDeleteCompany(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("DeleteCompany")",
+            data: { companyId: id },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCardCssSet() {
+        ClearModal();
+        document.getElementById("cardCss2").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss2").style.opacity = 1;
+    }
+</script>
+
+<style>
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*.modal-backdrop.fade {
+                            opacity:0;
+                        }*/
+    .page-content {
+        z-index: 1;
+    }
+
+    /*.card{
+                            opacity:0.35;
+                        }*/
+
+</style>

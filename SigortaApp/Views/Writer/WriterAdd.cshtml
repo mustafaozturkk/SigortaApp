@@ -1,0 +1,67 @@
+﻿@model SigortaApp.Web.Models.AddProfileImage
+@{
+    ViewData["Title"] = "WriterAdd";
+    Layout = "~/Views/Shared/WriterLayout.cshtml";
+}
+
+<form class="form-group" method="post" enctype="multipart/form-data">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Yazar Profil Bilgileri Düzenleme</h4>
+                <br />
+                @Html.HiddenFor(x => x.Id, new {@class="form-control"})
+                <form class="forms-sample">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Yazar Ad Soyad</label>
+                        @Html.TextBoxFor(x => x.Name, new {@class="form-control"})
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Mail Adresi</label>
+                        @Html.TextBoxFor(x => x.Mail, new {@class="form-control"})
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword4">Şifre</label>
+                        @Html.PasswordFor(x => x.Password, new {@class="form-control", @id="password1", @onkeyup="funcSifreOnay()"})
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword4">Şifreyi Onayla</label>
+                        @Html.PasswordFor(x => x.Password, new { @class="form-control", @id="password2", @onkeyup="funcSifreOnay()" })
+                    </div>
+                    <div class="form-group">
+                    <label id="passOnay" style="color:red;">Şifreler Eşleşmedi</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Yazar Görsel</label>
+                        <input type="file" name="Image">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">Yazar Hakkında</label>
+                        @Html.TextAreaFor(x => x.About, 10,3, new {@class="form-control"})
+                    </div>
+                    <button type="submit" id="kayit" title="Lütfen Şifrenizi Kontrol Edin !!" disabled class="btn btn-gradient-primary mr-2">Kaydet</button>
+                    <button class="btn btn-light">Vazgeç</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function funcSifreOnay() {
+        var pass1 = $("#password1").val();
+        var pass2 = $("#password2").val();
+        if (pass1.length > 0 && pass2.length > 0 && pass1 == pass2) {
+            $('#passOnay')[0].textContent = "Şifreler Eşleşti."
+            document.getElementById("passOnay").style.color = "#01cd74"
+            document.getElementById("kayit").disabled = false;
+            document.getElementById("kayit").title = "Şifreniz Onaylandı."
+        } else {
+            $('#passOnay')[0].textContent = "Şifreler Eşleşmedi."
+            document.getElementById("passOnay").style.color = "red"
+            document.getElementById("kayit").disabled = true;
+            document.getElementById("kayit").title = "Lütfen Şifrenizi Kontrol Edin !!"
+        }
+    }
+</script>

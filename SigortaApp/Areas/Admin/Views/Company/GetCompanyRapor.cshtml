@@ -1,0 +1,266 @@
+﻿@using SigortaApp.Entity.Dto;
+@model List<PaymentDto>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    @*<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Limitless - Responsive Web Application Kit by Eugene Kopyov</title>*@
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="~/LimitlessTheme/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/assets/css/ltr/all.min.css" id="stylesheet" rel="stylesheet" type="text/css">
+    <script src="~/LimitlessTheme/demo/demo_configurator.js"></script>
+    <script src="~/LimitlessTheme/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="~/LimitlessTheme/assets/js/app.js"></script>
+    <script src="~/LimitlessTheme/js/jquery/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.1/html2pdf.bundle.min.js"
+        integrity="sha512-vDKWohFHe2vkVWXHp3tKvIxxXg0pJxeid5eo+UjdjME3DBFBn2F8yWOE0XmiFcFbXxrEOR1JriWEno5Ckpn15A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.1/html2pdf.bundle.js"
+        integrity="sha512-CAlCnxBY4CJKhSvYNsnWtMxKjwLgRhHuJw7wUoOmjlrTDcRLQ5LD9P6YgWETJAmZTurlU86vBovlySF3KvjPeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body>
+    <div class="page-content">
+        <div class="content-wrapper">
+            <div class="content-inner">
+                <div class="content">
+                    
+                    <div class="card">
+                        @*<div class="card-header d-flex align-items-center py-0">
+                        <h5 class="py-3 mb-0">Cari Ekstre Raporu - @Model[0].CompanyId </h5>
+                        <div class="d-inline-flex ms-auto">
+                        <a type="button" href="/Admin/Company/DownloadPDFFile/" id="btnGenerate" target="_blank"
+                        class="btn btn-light"><i class="ph-file-arrow-down me-2"></i> Kaydet</a>
+
+                        </div>
+                        </div>*@
+
+                        <div class="card-body" id="divMainBody">
+                            <div class="row">
+                                @*<div class="col-sm-6">
+                                <div class="mb-4">
+                                <div class="d-inline-flex align-items-center mt-2 mb-3">
+                                <img src="~/LimitlessTheme/images/logo_icon.svg" class="h-24px" alt="">
+                                <h4 class="d-none d-sm-inline-block text-body mb-0 ms-2">@Model[0].Company.Name</h4>
+                                </div>
+
+                                <ul class="list list-unstyled mt-2 mb-0">
+                                <li>2269 Elba Lane</li>
+                                <li>Paris, France</li>
+                                <li>888-555-2311</li>
+                                </ul>
+                                </div>
+                                </div>*@
+
+                                <div class="col-md-12">
+                                    <div class="text-sm-end mb-4">
+                                        <h4 style="text-align: center;" title="İndirmek İçin Tıklayınız" onclick="generatePDF()"class="text-primary mb-2 mt-lg-2">@Model[0].Company.Name - Fatura</h4>
+                                        @* <ul class="list list-unstyled mb-0">
+                                            <li>Başlangıç Tarihi: <span class="fw-semibold">@Model.OrderBy(o =>
+                                                    o.CreatedDate).First().CreatedDate.ToShortDateString()</span></li>
+                                            <li>Bitiş Tarihi: <span class="fw-semibold">@Model.OrderByDescending(o =>
+                                                    o.CreatedDate).First().CreatedDate.ToShortDateString()</span></li>
+                                        </ul> *@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <li style="float: left;">Başlangıç Tarihi: <span class="fw-semibold">@Model.OrderBy(o =>
+                                                    o.CreatedDate).First().CreatedDate.ToShortDateString()</span></li>
+                                </div>
+                                <div class="col-md-6">
+                                    <li style="float: right;">Bitiş Tarihi: <span class="fw-semibold">@Model.OrderByDescending(o =>
+                                                    o.CreatedDate).First().CreatedDate.ToShortDateString()</span></li>
+                                </div>
+                            </div>
+
+                            @*<div class="d-lg-flex flex-lg-wrap">
+                            <div class="mb-4 mb-lg-2">
+                            <span class="text-muted">Invoice To:</span>
+                            <ul class="list list-unstyled mb-0">
+                            <li><h5 class="my-2">Rebecca Manes</h5></li>
+                            <li><span class="fw-semibold">Normand axis LTD</span></li>
+                            <li>3 Goodman Street</li>
+                            <li>London E1 8BF</li>
+                            <li>United Kingdom</li>
+                            <li>888-555-2311</li>
+                            <li><a href="#">rebecca@normandaxis.ltd</a></li>
+                            </ul>
+                            </div>
+
+                            <div class="mb-2 ms-auto">
+                            <span class="text-muted">Payment Details:</span>
+                            <div class="d-flex flex-wrap wmin-lg-400">
+                            <ul class="list list-unstyled mb-0">
+                            <li><h5 class="my-2">Total Due:</h5></li>
+                            <li>Bank name:</li>
+                            <li>Country:</li>
+                            <li>City:</li>
+                            <li>Address:</li>
+                            <li>IBAN:</li>
+                            <li>SWIFT code:</li>
+                            </ul>
+
+                            <ul class="list list-unstyled text-end mb-0 ms-auto">
+                            <li><h5 class="my-2">$8,750</h5></li>
+                            <li><span class="fw-semibold">Profit Bank Europe</span></li>
+                            <li>United Kingdom</li>
+                            <li>London E1 8BF</li>
+                            <li>3 Goodman Street</li>
+                            <li><span class="fw-semibold">KFH37784028476740</span></li>
+                            <li><span class="fw-semibold">BPT4E</span></li>
+                            </ul>
+                            </div>
+                            </div>
+                            </div>*@
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-lg">
+                                <thead>
+                                    <tr>
+                                        <th>Açıklama</th>
+                                        <th>Borç</th>
+                                        <th>Ödenen</th>
+                                        <th>Cari Bakiye</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var toplamBakiye = 0.0;
+                                    }
+                                    @foreach (var item in Model)
+                                    {
+                                        if (item.StatusId == 1 || item.StatusId == 3)
+                                        {
+                                            toplamBakiye += Convert.ToDouble(item.Price);
+                                        }
+                                        else
+                                        {
+                                            toplamBakiye -= Convert.ToDouble(item.Price);
+                                        }
+
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">Tarih - @item.CreatedDate.ToShortDateString()</div>
+                                                <span class="text-muted">@item.Description</span>
+                                            </td>
+                                            @if (item.StatusId == 1 || item.StatusId == 3)
+                                            {
+                                                <td></td>
+                                                <td>@(string.Format(new System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                        Convert.ToDouble(Model[0].Price)))</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@(string.Format(new System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                        Convert.ToDouble(Model[0].Price)))</td>
+                                                <td></td>
+                                            }
+                                            <td><span class="fw-semibold">@(string.Format(new
+                                                System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                toplamBakiye))</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-body border-top">
+                            <div class="d-lg-flex flex-lg-wrap">
+                                @*<div class="pt-2 mb-3">
+                                <h6 class="mb-3">Authorized person</h6>
+                                <div class="mb-3">
+                                <img src="~/LimitlessTheme/images/signature.png" width="150" alt="">
+                                </div>
+
+                                <ul class="list-unstyled text-muted">
+                                <li>Eugene Kopyov</li>
+                                <li>2269 Elba Lane</li>
+                                <li>Paris, France</li>
+                                <li>888-555-2311</li>
+                                </ul>
+                                </div>*@
+
+                                <div class="pt-2 mb-3 wmin-lg-400 ms-auto">
+                                    <h6 class="mb-3">Toplam Hesaplama:</h6>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <th>Ödenen:</th>
+                                                    <td class="text-end">@(string.Format(new
+                                                        System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                        Model[0].Alınan))</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Toplam İş Tutarı: @*<span class="fw-normal">(25%)</span>*@</th>
+                                                    <td class="text-end">@(string.Format(new
+                                                        System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                        Model[0].Borc))</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Bakiye:</th>
+                                                    <td class="text-end text-primary">
+                                                        <h5 class="fw-semibold">@(string.Format(new
+                                                            System.Globalization.CultureInfo("tr-TR"), "{0:C}",
+                                                            Model[0].CariBakiye))</h5>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    @*<div class="text-end mt-3">
+                                    <button type="button" class="btn btn-primary">
+                                    Send invoice
+                                    <i class="ph-paper-plane-tilt ms-2"></i>
+                                    </button>
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            @*<span class="text-muted">Thank you for using Limitless. This invoice can be paid via
+                            PayPal, Bank transfer, Skrill or Payoneer. Payment is due within 30 days from the date of
+                            delivery. Late payment is possible, but with with a fee of 10% per month. Company registered
+                            in England and Wales #6893003, registered office: 3 Goodman Street, London E1 8BF, United
+                            Kingdom. Phone number: 888-555-2311</span>*@
+                            <span class="text-muted">Takım Yıldızı Lojistik Şirketini Tercih ettiğiniz için teşekkür
+                                ederiz.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+function generatePDF() {
+    var options = {
+                margin: 10,
+                filename: 'example.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            // html2pdf.js kullanarak PDF oluşturun
+            var element = document.body; // Sayfanın tamamını seçin
+            html2pdf(element, options);
+        }
+</script>

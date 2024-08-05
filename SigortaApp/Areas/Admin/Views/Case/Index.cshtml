@@ -1,0 +1,160 @@
+﻿@using SigortaApp.Entity.Dto;
+@model List<CaseDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card" id="cardCss2" @*style="width:fit-content;"*@>
+    <div class="card-header">
+        <h5 class="mb-0">
+            KASALAR
+            <button type="button" class="btn btn-light" style="float:right;" data-bs-toggle="modal" onclick="funcCardCssSet()" data-bs-target="#caseModal">Kasa Ekle <i class="ph-plus-circle ms-2"></i></button>
+        </h5>
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered datatable-basic" id="caseTable" width="100%">
+            <thead>
+                <tr>
+                    <th>Kasa No</th>
+                    <th>Kasa Adı</th>
+                    <th>Hesap Bakiye</th>
+                    <th class="text-center">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>#@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.AccountPrice</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex">
+                                <a href="/Admin/Case/Details/@item.Id"><i class="ph-eye"></i></a>&nbsp;&nbsp;&nbsp;
+                                <a href="#" onclick="funcGetCase(@item.Id)"><i class="ph-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+                                <a href="#" onclick="funcDeleteCase(@item.Id)" id="sweet_combine"><i class="ph-trash"></i></a>&nbsp;&nbsp;&nbsp;
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @*secondary--danger--info--*@
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="caseModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Banka Hesabı</h5>
+                <button type="button" class="btn-close" onclick="funcCardCssSetClear()" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="@Url.Action("AddCase", "Case")">
+                <div class="modal-body" style="background-color: #fbf9f9;">
+                    <div class="form-control">
+                        <input type="text" id="caseId" name="Id" value="0" hidden />
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Kasa Adı</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="caseName" name="Name" placeholder="Kasa Adı Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-form-label col-lg-3">Kasa Bakiye</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="caseAccountPrice" name="AccountPrice" placeholder="Kasa Bakiyesi Giriniz..">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="form-check-label col-lg-3" for="sc_li_c">Aktif Mi</label>
+                            <div class="col-lg-9">
+                                <div class="form-check form-check-inline form-switch">
+                                    <input type="checkbox" name="IsActive" checked value="true" class="form-check-input form-check-input-success" id="sc_li_c">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" onclick="funcCardCssSetClear()" data-bs-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function funcGetCase(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCase")",
+            data: { caseId: id },
+            success: function (response) {
+                $("#caseModal").modal('show');
+                document.getElementById("caseId").value = response.id;
+                document.getElementById("caseName").value = response.name;
+                document.getElementById("caseAccountPrice").value = response.accountPrice;
+                //document.getElementById("sc_li_c").checked = response.isActive;
+                document.getElementById("cardCss2").style.opacity = 0.35;
+
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcDeleteCase(id) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("DeleteCase")",
+            data: { caseId: id },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (req, status, error) {
+                console.log(response);
+            }
+        });
+    }
+
+    function funcCardCssSet() {
+        document.getElementById("cardCss2").style.opacity = 0.35;
+    }
+
+    function funcCardCssSetClear() {
+        document.getElementById("cardCss2").style.opacity = 1;
+    }
+</script>
+
+<style>
+    .modal-backdrop.show {
+        opacity: 0.35;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .modal.fade.show {
+        z-index: 2055;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    /*.modal-backdrop.fade {
+                            opacity:0;
+                        }*/
+    .page-content {
+        z-index: 1;
+    }
+
+    /*.card{
+                            opacity:0.35;
+                        }*/
+
+</style>

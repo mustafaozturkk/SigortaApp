@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Sanayi CRM</title>
+
+    <!-- Global stylesheets -->
+    <link href="~/LimitlessTheme/fonts/inter/inter.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/icons/phosphor/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="~/LimitlessTheme/assets/css/ltr/all.min.css" id="stylesheet" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    <script src="~/LimitlessTheme/demo/demo_configurator.js"></script>
+    @*<script src="/LimitlessTheme/js/bootstrap/bootstrap.bundle.min.js"></script>*@
+    <script src="~/limitlesstheme/js/newbootstrap/bootstrap.bundle.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    <script src="~/LimitlessTheme/js/jquery/jquery.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/forms/selects/select2.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/tables/datatables/datatables.min.js"></script>
+
+    <script src="~/LimitlessTheme/demo/pages/datatables_basic.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/tables/datatables/datatables.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/tables/datatables/extensions/buttons.min.js"></script>
+    <script src="~/LimitlessTheme/demo/pages/datatables_extension_buttons_excel.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/ui/moment/moment.min.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/daterangepicker.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/pickers/datepicker.min.js"></script>
+
+    <script src="~/LimitlessTheme/demo/pages/picker_date.js"></script>
+
+    <script src="~/LimitlessTheme/js/vendor/notifications/sweet_alert.min.js"></script>
+    <script src="~/LimitlessTheme/demo/pages/extra_sweetalert.js"></script>
+    <script src="~/LimitlessTheme/js/vendor/forms/selects/bootstrap_multiselect.js"></script>
+
+    <!-- /theme JS files -->
+
+
+    <script src="~/LimitlessTheme/demo/pages/dashboard.js"></script>
+
+    <script src="~/LimitlessTheme/assets/js/app.js"></script>
+    @*<script src="~/LimitlessTheme/demo/pages/form_select2.js"></script>*@
+    <!-- /theme JS files -->
+
+</head>
+
+<body>
+
+
+    @await Html.PartialAsync("~/Areas/Admin/Views/Widget/NavbarPartial.cshtml")
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main sidebar -->
+        <div class="sidebar sidebar-dark sidebar-main sidebar-expand-lg">
+
+            <!-- Sidebar content -->
+            <div class="sidebar-content">
+
+                <!-- Sidebar header -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-body d-flex justify-content-center">
+                        <h5 class="sidebar-resize-hide flex-grow-1 my-auto">Panel</h5>
+
+                        <div>
+                            <button type="button" class="btn btn-flat-white btn-icon btn-sm rounded-pill border-transparent sidebar-control sidebar-main-resize d-none d-lg-inline-flex">
+                                <i class="ph-arrows-left-right"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-flat-white btn-icon btn-sm rounded-pill border-transparent sidebar-mobile-main-toggle d-lg-none">
+                                <i class="ph-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /sidebar header -->
+                <!-- Main navigation -->
+                <div class="sidebar-section">
+                    <ul class="nav nav-sidebar" data-nav-type="accordion">
+
+                        <li class="nav-item-header pt-0">
+                            <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Ana Sayfa</div>
+                            <i class="ph-dots-three sidebar-resize-show"></i>
+                        </li>
+                        <li class="nav-item">
+                            <a href="~/Admin/Home/Index/" class="nav-link">
+                                <i class="ph-house"></i>
+                                <span>
+                                    Ana Sayfa
+                                </span>
+                            </a>
+                        </li>
+                        <!-- Main -->
+                        <li class="nav-item-header pt-0">
+                            <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">CRM</div>
+                            <i class="ph-dots-three sidebar-resize-show"></i>
+                        </li>
+                        <li class="nav-item">
+                            <a href="~/Admin/Task/Index/" class="nav-link">
+                                <i class="ph-house"></i>
+                                <span>
+                                    İş Yönetimi
+                                    @await Component.InvokeAsync("UserDatas")
+                                </span>
+                            </a>
+                        </li>
+                        @if (User.Claims.Where(w => w.Type.Contains("role")).First().Value == "Admin")
+                        {
+                            @* <li class="nav-item">
+                                <a href="~/Admin/PaymentTask/Index/" class="nav-link">
+                                    <i class="ph-money"></i>
+                                    <span>
+                                        Ödeme Yönetimi
+                                    </span>
+                                </a>
+                            </li> *@
+                            <li class="nav-item nav-item-submenu">
+                                <a href="#" class="nav-link">
+                                    <i class="ph-layout"></i>
+                                    <span>Rol Yönetimi</span>
+                                </a>
+                                <ul class="nav-group-sub collapse">
+                                    <li class="nav-item"><a href="~/Admin/Role/Index/" class="nav-link"><i class="ph-user-gear"></i>Roller</a></li>
+                                    <li class="nav-item"><a href="~/Admin/Role/UserRoleList/" class="nav-link"><i class="ph-user-list"></i>Kullanıcı Listesi</a></li>
+                                    @*<li class="nav-item"><a href="../../layout_7/full/index.html" class="nav-link disabled">Layout 7 <span class="badge align-self-center ms-auto">Coming soon</span></a></li>*@
+                                </ul>
+                            </li>
+                            <li class="nav-item nav-item-submenu">
+                                <a href="#" class="nav-link">
+                                    <i class="ph-money"></i>
+                                    <span>Ödeme Yönetimi</span>
+                                </a>
+                                <ul class="nav-group-sub collapse">
+                                    <li class="nav-item"><a href="~/Admin/BankAccount/Index/" class="nav-link"><i class="ph-bank"></i>Banka Hesapları</a></li>
+                                    <li class="nav-item"><a href="~/Admin/Case/Index/" class="nav-link"><i class="ph-briefcase"></i>Kasalar</a></li>
+                                    @*<li class="nav-item"><a href="../../layout_7/full/index.html" class="nav-link disabled">Layout 7 <span class="badge align-self-center ms-auto">Coming soon</span></a></li>*@
+                                </ul>
+                            </li>
+                            <li class="nav-item nav-item-submenu">
+                                <a href="#" class="nav-link">
+                                    <i class="ph-layout"></i>
+                                    <span>Şirket Yönetimi</span>
+                                </a>
+                                <ul class="nav-group-sub collapse">
+                                    <li class="nav-item"><a href="~/Admin/Company/Index/" class="nav-link"><i class="ph-briefcase"></i>Şirketler</a></li>
+                                    @*<li class="nav-item"><a href="~/Admin/Role/UserRoleList/" class="nav-link">Kullanıcı Listesi</a></li>*@
+                                    @*<li class="nav-item"><a href="../../layout_7/full/index.html" class="nav-link disabled">Layout 7 <span class="badge align-self-center ms-auto">Coming soon</span></a></li>*@
+                                </ul>
+                            </li>
+                        }
+                        @*<li class="nav-item nav-item-submenu">
+                        <a href="#" class="nav-link">
+                        <i class="ph-swatches"></i>
+                        <span>Themes</span>
+                        </a>
+                        <ul class="nav-group-sub collapse">
+                        <li class="nav-item"><a href="index.html" class="nav-link active">Default</a></li>
+                        <li class="nav-item"><a href="../../../LTR/material/full/index.html" class="nav-link disabled">Material <span class="badge align-self-center ms-auto">Coming soon</span></a></li>
+                        <li class="nav-item"><a href="../../../LTR/clean/full/index.html" class="nav-link disabled">Clean <span class="badge align-self-center ms-auto">Coming soon</span></a></li>
+                        </ul>
+                        </li>
+                        <li class="nav-item nav-item-submenu">
+                        <a href="#" class="nav-link">
+                        <i class="ph-note-blank"></i>
+                        <span>Starter kit</span>
+                        </a>
+                        <ul class="nav-group-sub collapse">
+                        <li class="nav-item"><a href="../seed/layout_static.html" class="nav-link">Static layout</a></li>
+                        <li class="nav-item"><a href="../seed/layout_no_header.html" class="nav-link">No header</a></li>
+                        <li class="nav-item"><a href="../seed/layout_no_footer.html" class="nav-link">No footer</a></li>
+                        <li class="nav-item-divider"></li>
+                        <li class="nav-item"><a href="../seed/layout_fixed_header.html" class="nav-link">Fixed header</a></li>
+                        <li class="nav-item"><a href="../seed/layout_fixed_footer.html" class="nav-link">Fixed footer</a></li>
+                        <li class="nav-item-divider"></li>
+                        <li class="nav-item"><a href="../seed/layout_2_sidebars_1_side.html" class="nav-link">2 sidebars on 1 side</a></li>
+                        <li class="nav-item"><a href="../seed/layout_2_sidebars_2_sides.html" class="nav-link">2 sidebars on 2 sides</a></li>
+                        <li class="nav-item"><a href="../seed/layout_3_sidebars.html" class="nav-link">3 sidebars</a></li>
+                        <li class="nav-item-divider"></li>
+                        <li class="nav-item"><a href="../seed/layout_boxed_page.html" class="nav-link">Boxed page</a></li>
+                        <li class="nav-item"><a href="../seed/layout_boxed_content.html" class="nav-link">Boxed content</a></li>
+                        </ul>
+                        </li>
+                        <li class="nav-item">
+                        <a href="../../../../docs/other_changelog.html" class="nav-link">
+                        <i class="ph-list-numbers"></i>
+                        <span>Changelog</span>
+                        <span class="badge bg-primary align-self-center rounded-pill ms-auto">4.0</span>
+                        </a>
+                        </li>*@
+                    </ul>
+                </div>
+                <!-- /main navigation -->
+
+            </div>
+            <!-- /sidebar content -->
+
+        </div>
+        <!-- /main sidebar -->
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Inner content -->
+            <div class="content-inner">
+
+                <!-- Content area -->
+                <div class="content">
+
+                    @RenderBody()
+
+                </div>
+                <!-- /content area -->
+                <!-- Footer -->
+                <div class="navbar navbar-sm navbar-footer border-top">
+                    <div class="container-fluid">
+                        <span><b>Copyright &copy; 2023 Takım Yıldızı. Tüm hakları saklıdır.</b></span>
+
+                        @*<ul class="nav">
+                        <li class="nav-item">
+                        <a href="https://kopyov.ticksy.com/" class="navbar-nav-link navbar-nav-link-icon rounded" target="_blank">
+                        <div class="d-flex align-items-center mx-md-1">
+                        <i class="ph-lifebuoy"></i>
+                        <span class="d-none d-md-inline-block ms-2">Support</span>
+                        </div>
+                        </a>
+                        </li>
+                        <li class="nav-item ms-md-1">
+                        <a href="https://demo.interface.club/limitless/demo/Documentation/index.html" class="navbar-nav-link navbar-nav-link-icon rounded" target="_blank">
+                        <div class="d-flex align-items-center mx-md-1">
+                        <i class="ph-file-text"></i>
+                        <span class="d-none d-md-inline-block ms-2">Docs</span>
+                        </div>
+                        </a>
+                        </li>
+                        <li class="nav-item ms-md-1">
+                        <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328?ref=kopyov" class="navbar-nav-link navbar-nav-link-icon text-primary bg-primary bg-opacity-10 fw-semibold rounded" target="_blank">
+                        <div class="d-flex align-items-center mx-md-1">
+                        <i class="ph-shopping-cart"></i>
+                        <span class="d-none d-md-inline-block ms-2">Purchase</span>
+                        </div>
+                        </a>
+                        </li>
+                        </ul>*@
+                    </div>
+                </div>
+                <!-- /footer -->
+
+            </div>
+            <!-- /inner content -->
+
+        </div>
+        <!-- /main content -->
+
+    </div>
+    <!-- /page content -->
+    <!-- Notifications -->
+    @await Component.InvokeAsync("Notifications")
+    <!-- /notifications -->
+    <!-- Demo config -->
+    @*<div class="offcanvas offcanvas-end" tabindex="-1" id="demo_config">
+    <div class="position-absolute top-50 end-100 visible">
+    <button type="button" class="btn btn-primary btn-icon translate-middle-y rounded-end-0" data-bs-toggle="offcanvas" data-bs-target="#demo_config">
+    <i class="ph-gear"></i>
+    </button>
+    </div>
+
+    <div class="offcanvas-header border-bottom py-0">
+    <h5 class="offcanvas-title py-3">Demo configuration</h5>
+    <button type="button" class="btn btn-light btn-sm btn-icon border-transparent rounded-pill" data-bs-dismiss="offcanvas">
+    <i class="ph-x"></i>
+    </button>
+    </div>
+
+    <div class="offcanvas-body">
+    <div class="fw-semibold mb-2">Color mode</div>
+    <div class="list-group mb-3">
+    <label class="list-group-item list-group-item-action form-check border-width-1 rounded mb-2">
+    <div class="d-flex flex-fill my-1">
+    <div class="form-check-label d-flex me-2">
+    <i class="ph-sun ph-lg me-3"></i>
+    <div>
+    <span class="fw-bold">Light theme</span>
+    <div class="fs-sm text-muted">Set light theme or reset to default</div>
+    </div>
+    </div>
+    <input type="radio" class="form-check-input cursor-pointer ms-auto" name="main-theme" value="light" checked>
+    </div>
+    </label>
+
+    <label class="list-group-item list-group-item-action form-check border-width-1 rounded mb-2">
+    <div class="d-flex flex-fill my-1">
+    <div class="form-check-label d-flex me-2">
+    <i class="ph-moon ph-lg me-3"></i>
+    <div>
+    <span class="fw-bold">Dark theme</span>
+    <div class="fs-sm text-muted">Switch to dark theme</div>
+    </div>
+    </div>
+    <input type="radio" class="form-check-input cursor-pointer ms-auto" name="main-theme" value="dark">
+    </div>
+    </label>
+
+    <label class="list-group-item list-group-item-action form-check border-width-1 rounded mb-0">
+    <div class="d-flex flex-fill my-1">
+    <div class="form-check-label d-flex me-2">
+    <i class="ph-translate ph-lg me-3"></i>
+    <div>
+    <span class="fw-bold">Auto theme</span>
+    <div class="fs-sm text-muted">Set theme based on system mode</div>
+    </div>
+    </div>
+    <input type="radio" class="form-check-input cursor-pointer ms-auto" name="main-theme" value="auto">
+    </div>
+    </label>
+    </div>
+
+    <div class="fw-semibold mb-2">Direction</div>
+    <div class="list-group mb-3">
+    <label class="list-group-item list-group-item-action form-check border-width-1 rounded mb-0">
+    <div class="d-flex flex-fill my-1">
+    <div class="form-check-label d-flex me-2">
+    <i class="ph-translate ph-lg me-3"></i>
+    <div>
+    <span class="fw-bold">RTL direction</span>
+    <div class="text-muted">Toggle between LTR and RTL</div>
+    </div>
+    </div>
+    <input type="checkbox" name="layout-direction" value="rtl" class="form-check-input cursor-pointer m-0 ms-auto">
+    </div>
+    </label>
+    </div>
+
+    <div class="fw-semibold mb-2">Layouts</div>
+    <div class="row">
+    <div class="col-12">
+    <a href="index.html" class="d-block mb-3">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_1.png" class="img-fluid img-thumbnail bg-primary bg-opacity-20 border-primary" alt="">
+    </a>
+    </div>
+    <div class="col-12">
+    <a href="../../layout_2/full/index.html" class="d-block mb-3">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_2.png" class="img-fluid img-thumbnail" alt="">
+    </a>
+    </div>
+    <div class="col-12">
+    <a href="../../layout_3/full/index.html" class="d-block mb-3">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_3.png" class="img-fluid img-thumbnail" alt="">
+    </a>
+    </div>
+    <div class="col-12">
+    <a href="../../layout_4/full/index.html" class="d-block mb-3">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_4.png" class="img-fluid img-thumbnail" alt="">
+    </a>
+    </div>
+    <div class="col-12">
+    <a href="../../layout_5/full/index.html" class="d-block mb-3">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_5.png" class="img-fluid img-thumbnail" alt="">
+    </a>
+    </div>
+    <div class="col-12">
+    <a href="../../layout_6/full/index.html" class="d-block">
+    <img src="https://demo.interface.club/limitless/assets/images/layouts/layout_6.png" class="img-fluid img-thumbnail" alt="">
+    </a>
+    </div>
+    </div>
+    </div>
+
+    <div class="border-top text-center py-2 px-3">
+    <a href="https://themeforest.net/item/limitless-responsive-web-application-kit/13080328?ref=kopyov" class="btn btn-yellow fw-semibold w-100 my-1" target="_blank">
+    <i class="ph-shopping-cart me-2"></i>
+    Purchase Limitless
+    </a>
+    </div>
+    </div>*@
+    <!-- /demo config -->
+
+</body>
+</html>
+
+<script>
+    $(document).ready(function () {
+        $(".nav.nav-sidebar").find('[href="' + window.location.pathname + '"]').addClass('active');
+    });
+</script>
